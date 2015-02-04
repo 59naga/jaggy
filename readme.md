@@ -1,7 +1,9 @@
-# Jaggy(options)
+# Jaggy()
 [![NPM version][npm-image]][npm]
 [![Build Status][travis-image]][travis]
 [![Dependency Status][depstat-image]][depstat]
+
+## Use for gulp
 
 ```coffee
 jaggy= require 'jaggy'
@@ -9,9 +11,6 @@ gulp.src 'fixtures/*.png'
   .pipe jaggy()
   .pipe gulp.dest 'public_html'
 ```
-
-#### options.afterConvert: function
-#### options.glitch: int or function (fragile)
 
 ## Feture
 * ***TEST***
