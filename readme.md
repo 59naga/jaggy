@@ -17,7 +17,7 @@ gulp.src 'fixtures/*.png'
 * ***TEST***
 * Support Animation GIF
 * Browser Friendly ([Like this](https://github.com/59naga/vectorizer/))
-<!-- * Support `install -g` (move another project) -->
+* Support `install -g` (move another project)
 
 # License
 MIT by [@59naga](https://twitter.com/horse_n_deer)
