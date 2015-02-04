@@ -1,0 +1,47 @@
+{
+  "name": "jaggy",
+  "version": "0.0.1",
+  "description": "is Converting to SVG by pixels",
+  "main": "src/index.js",
+  "scripts": {
+    "preinstall": "coffee -cbp index.coffee > src/index.js",
+    
+    "start": "npm install && gulp",
+    "test": "npm install && gulp test"
+  },
+
+  "dependencies": {
+    "dom-lite": "^0.3.8",
+    "get-pixels": "^3.1.0",
+    "gify-parse": "^1.0.4",
+    "gulp": "^3.8.10",
+    "gulp-util": "^3.0.3",
+    "mime": "^1.2.11",
+    "through2": "^0.6.3"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.9.0",
+    "debug": "^2.1.1",
+    "gulp-connect": "^2.2.0",
+    "gulp-jasmine": "^2.0.0",
+    "gulp-watch": "^4.1.0"
+  },
+  
+  "keywords": [
+    "pixel",
+    "pixel-art",
+    "get-pixels",
+    "png2svg",
+    "gulpfriendly"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/59naga/jaggy.git"
+  },
+  "bugs": {
+    "url": "https://github.com/59naga/jaggy/issues"
+  },
+  "homepage": "https://github.com/59naga/jaggy",
+  "author": "59naga",
+  "license": "MIT"
+}
