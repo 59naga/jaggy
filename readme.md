@@ -4,13 +4,17 @@
 [![Dependency Status][depstat-image]][depstat]
 
 ## Use for gulp
-
 ```coffee
 jaggy= require 'jaggy'
 gulp.src 'fixtures/*.png'
   .pipe jaggy()
   .pipe gulp.dest 'public_html'
 ```
+
+## Why?
+Doesn't work [`image-rendering:crisp-edges`](http://caniuse.com/#feat=css-crisp-edges).
+However, Can work on the [`<svg shape-rendering="crispEdges">`](http://caniuse.com/#feat=svg).
+Gotcha, save the jaggy.
 
 ## Feture
 * ***TEST***
