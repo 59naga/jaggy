@@ -1,4 +1,4 @@
-# Jaggy()
+# Jaggy
 [![NPM version][npm-image]][npm]
 [![Build Status][travis-image]][travis]
 [![Dependency Status][depstat-image]][depstat]
