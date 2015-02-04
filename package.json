@@ -1,10 +1,10 @@
 {
   "name": "jaggy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "is Converting to SVG by pixels",
   "main": "src/index.js",
   "scripts": {
-    "preinstall": "coffee -cbp index.coffee > src/index.js",
+    "postinstall": "coffee -cbp index.coffee > src/index.js",
     
     "start": "npm install && gulp",
     "test": "npm install && gulp test"
