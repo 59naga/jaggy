@@ -17,7 +17,7 @@ However, Can work on the [`<svg shape-rendering="crispEdges">`](http://caniuse.c
 Gotcha, save the jaggy.
 
 ## Feture
-* ***TEST***
+* <del>***TEST***</del>
 * Support Animation GIF
 * Browser Friendly ([Like this](https://github.com/59naga/vectorizer/))
 * Support `install -g`
