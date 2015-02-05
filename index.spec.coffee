@@ -3,10 +3,10 @@ gulp= require 'gulp'
 
 describe 'Jaggy',->
   describe 'Standard Usage',->
-    original= jasmine.DEFAULT_TIMEOUT_INTERVAL
-    jasmine.DEFAULT_TIMEOUT_INTERVAL= 20000
-
     it 'Convert to <svg> by .gif',(done)->
+      original= jasmine.DEFAULT_TIMEOUT_INTERVAL
+      jasmine.DEFAULT_TIMEOUT_INTERVAL= 20000
+
       gulp.src 'fixtures/*.gif'
         .pipe Jaggy()
         .pipe gulp.dest 'public_html'
@@ -15,12 +15,20 @@ describe 'Jaggy',->
           done()
 
     it 'Convert to <svg> by .png',(done)->
+      original= jasmine.DEFAULT_TIMEOUT_INTERVAL
+      jasmine.DEFAULT_TIMEOUT_INTERVAL= 20000
+      
       gulp.src 'fixtures/*.png'
         .pipe Jaggy()
         .pipe gulp.dest 'public_html'
-        .on 'end',done
+        .on 'end',->
+          jasmine.DEFAULT_TIMEOUT_INTERVAL= original
+          done()
 
     it 'Convert to <svg> by .jpg',(done)->
+      original= jasmine.DEFAULT_TIMEOUT_INTERVAL
+      jasmine.DEFAULT_TIMEOUT_INTERVAL= 20000
+      
       gulp.src 'fixtures/*.jpg'
         .pipe Jaggy()
         .pipe gulp.dest 'public_html'
