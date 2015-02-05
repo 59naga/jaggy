@@ -6,7 +6,7 @@
 ## Use for gulp
 ```coffee
 jaggy= require 'jaggy'
-gulp.src 'fixtures/*.png'
+gulp.src ['fixtures/*.png','fixtures/*.gif','fixtures/*.jpg']
   .pipe jaggy()
   .pipe gulp.dest 'public_html'
 ```
@@ -17,8 +17,8 @@ However, Can work on the [`<svg shape-rendering="crispEdges">`](http://caniuse.c
 Gotcha, save the jaggy.
 
 ## Feture
-* <del>***TEST***</del>
-* Support Animation GIF
+* ***TEST***
+* <del>Support Animation GIF</del> <ins>unstable</ins>
 * Browser Friendly ([Like this](https://github.com/59naga/vectorizer/))
 * Support `install -g`
 
