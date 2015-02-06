@@ -1,10 +1,6 @@
-Jaggy= (options,args...)->
-  Jaggy.gulpPlugin options if args.length is 0
-
-describe= (require 'debug')('jaggy')
-
-Jaggy.createElement= document?.createElement ? require('dom-lite').document.createElement.bind require('dom-lite').document
-Jaggy.createTextNode= document?.createTextNode ? require('dom-lite').document.createTextNode.bind require('dom-lite').document
+Jaggy= ->
+  Jaggy.createSVG.apply null,arguments if typeof window isnt 'undefined'
+  Jaggy.gulpPlugin.apply null,arguments if typeof window is 'undefined'
 
 Jaggy.gulpPlugin= (options={})->
   gutil= require 'gulp-util'
@@ -12,27 +8,68 @@ Jaggy.gulpPlugin= (options={})->
   return through2.obj (file,encode,next)->
     return @emit 'error',new gutil.PluginError 'jaggy','Streaming not supported' if file.isStream()
 
-    describe 'Convert to pixelArray by Image'
     Jaggy.readImageData file,(error,pixels)=>
       throw error if error?
 
-      describe 'Convert to Frame by pixelArray'
-      jaggy= Jaggy.convert pixels,options
-
-      describe 'Create <svg> by Frame'
-      svg= jaggy.toSVG options
-      svg= options.afterConvert svg,jaggy,file if typeof options.afterConvert is 'function'
-
-      html= svg.outerHTML.replace ' viewbox=',' viewBox='# fix lowerCamel
-      html= html.replace(/&gt;/g,'>')# enable querySelector
-
       file.path= gutil.replaceExtension file.path,'.svg'
-      file.contents= new Buffer html
+      file.contents= new Buffer Jaggy.convertToSVG pixels,options
       @push file
 
       next()
 
-# Use node.js Buffer
+# Use url for browser
+Jaggy.createSVG= (url,args...)->
+  throw new Error 'url is not string' if typeof url isnt 'string'
+  callback= null
+  args.forEach (arg)-> switch typeof arg
+    when 'function' then callback= arg
+  
+  getPixels= require 'get-pixels'
+  getPixels url,(error,pixels)->
+    return callback error if error?
+
+    if pixels.shape.length is 3
+      svg= Jaggy.convertToSVG pixels,outerHTML:false
+      callback null,svg
+
+    if pixels.shape.length is 4
+      xhr= new XMLHttpRequest
+      xhr.open 'GET',url,true
+      xhr.responseType= 'arraybuffer'
+      xhr.send()
+      xhr.onerror= -> callback xhr.statusText
+      xhr.onload= ->
+        gifyParse= require 'gify-parse'
+        anime= gifyParse.getInfo xhr.response
+        anime.delays= anime.images.map (image)-> image.delay
+        anime.disposals= anime.images.map (image)-> image.disposal
+        pixels.anime= anime
+
+        svg= Jaggy.convertToSVG pixels,outerHTML:false
+        callback null,svg
+
+Jaggy.convertToSVG= (pixels,options={})->
+  jaggy= Jaggy.convert pixels,options
+
+  svg= jaggy.toSVG options
+  svg= options.afterConvert svg,jaggy,file if typeof options.afterConvert is 'function'
+
+  if options.outerHTML isnt false
+    svg= svg.outerHTML.replace ' viewbox=',' viewBox='# fix to lowerCamel
+    svg= svg.replace(/&gt;/g,'>')# enable querySelector
+    return svg
+
+  svg
+
+Jaggy.enableAnimation= (svg)->
+  throw new Error('Can enable appended element only') if svg.parentNode is null
+
+  # fix disabled script
+  script= svg.querySelector 'script'
+  script.parentNode.replaceChild script.cloneNode(),script
+  svg
+
+# Use Buffer for node.js
 Jaggy.readImageData= (file,callback)->
   return callback 'file is not object' if typeof file isnt 'object'
   
@@ -93,8 +130,10 @@ class Jaggy.Frames
       i++
 
   toSVG:->
-    svg= Jaggy.createElement 'svg'
-    svg.setAttribute key,value for key,value of @attrs
+    svg= Jaggy.createElementNS 'svg'
+    for key,value of @attrs
+      svg.setAttribute key,value if key.indexOf('xmlns') is 0
+      svg.setAttributeNS null,key,value if key.indexOf('xmlns') isnt 0
     if @frames.length is 1
       svg.appendChild @frames[0].toG()
     else
@@ -104,7 +143,7 @@ class Jaggy.Frames
     svg
 
   createAnime:->
-    g= Jaggy.createElement 'g'
+    g= Jaggy.createElementNS 'g'
     g.setAttribute 'style','display:none'
     g.appendChild frame.toG() for frame in @frames
     g
@@ -123,7 +162,7 @@ class Jaggy.Frames
 
     setTimeout -> nextFrame()
     nextFrame=->
-      frame= frames[i++]
+      frame= frames[i]
       frame= frames[i= 0] if frame is undefined
       frame_id= frame.getAttribute 'id'
       if frame_id is null
@@ -134,12 +173,12 @@ class Jaggy.Frames
         uses= document.querySelectorAll '#'+id+'>use'
         use.parentNode.removeChild use for use in uses
 
+      i++
       createDisplay frame_id
       setTimeout nextFrame,frame.getAttribute 'delay'
 
     createDisplay=(frame_id)->
       display= document.createElementNS 'http://www.w3.org/2000/svg','use'
-      display.setAttribute 'xmlns:xlink','http://www.w3.org/1999/xlink'
       display.setAttributeNS 'http://www.w3.org/1999/xlink','href','#'+frame_id if frame_id
       document.querySelector('#'+id).insertBefore display,document.querySelector '#'+id+'>g'
 
@@ -159,7 +198,6 @@ class Jaggy.Frame# has many Color
     i= 0
     increment= if options.glitch then options.glitch else 4
     while (begin+i) <= end
-      values= []
       # if @disposal is 3
       #   values.push image.data[i+0]
       #   values.push image.data[i+1]
@@ -173,7 +211,6 @@ class Jaggy.Frame# has many Color
         values.push image.data[begin+i+2]
         values.push (image.data[begin+i+3]/255).toFixed(2)
 
-      if values.length
         rgba= 'rgba('+values.join(',')+')'
         if this[rgba] is undefined
           this[rgba]= new Jaggy.Color
@@ -185,7 +222,7 @@ class Jaggy.Frame# has many Color
       i= if typeof increment is 'function' then increment(i) else i+increment
 
   toG:->
-    g= Jaggy.createElement 'g'
+    g= Jaggy.createElementNS 'g'
     for key,value of this
       g.setAttribute key,value if typeof value is 'number'
       g.appendChild value.toPath key if value instanceof Jaggy.Color
@@ -196,11 +233,9 @@ class Jaggy.Color# has many Rect in @points
   put:(point)-> @points.push point
 
   toPath:(fill='black')->
-    dom= document ? require('dom-lite').document
-
-    path= Jaggy.createElement 'path'
-    path.setAttribute 'fill',fill if fill.length
-    path.setAttribute 'd',@getRects().map((rect)->rect.toD()).join '' if @points.length
+    path= Jaggy.createElementNS 'path'
+    path.setAttributeNS null,'fill',fill if fill.length
+    path.setAttributeNS null, 'd',@getRects().map((rect)->rect.toD()).join '' if @points.length
     path
 
   getRects:->
@@ -248,4 +283,19 @@ class Jaggy.Point
   constructor:(@x,@y)->
   toRect:-> new Jaggy.Rect this
 
-module.exports= Jaggy
+if typeof window isnt 'undefined'
+  Jaggy.createElement= document.createElement.bind document
+  Jaggy.createElementNS= document.createElementNS.bind document,'http://www.w3.org/2000/svg'
+  Jaggy.createTextNode= document.createTextNode.bind document
+
+  window.jaggy= Jaggy
+else
+  domlite= require('dom-lite').document
+  Jaggy.createElement= domlite.createElement.bind domlite
+  Jaggy.createElementNS= (name)->
+    element= Jaggy.createElement name
+    element.setAttributeNS?= (ns,key,value)-> this.setAttribute key,value
+    element
+  Jaggy.createTextNode= domlite.createTextNode.bind domlite
+
+  module.exports= Jaggy if typeof window is 'undefined'

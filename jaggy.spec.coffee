@@ -1,39 +1,37 @@
-Jaggy= require './index.coffee'
+Jaggy= require './jaggy.coffee'
 gulp= require 'gulp'
+reset= jasmine.DEFAULT_TIMEOUT_INTERVAL
 
 describe 'Jaggy',->
   describe 'Standard Usage',->
     it 'Convert to <svg> by .gif',(done)->
-      original= jasmine.DEFAULT_TIMEOUT_INTERVAL
-      jasmine.DEFAULT_TIMEOUT_INTERVAL= 20000
+      jasmine.DEFAULT_TIMEOUT_INTERVAL= 30000
 
-      gulp.src 'fixtures/*.gif'
+      gulp.src 'public_html/*.gif'
         .pipe Jaggy()
         .pipe gulp.dest 'public_html'
         .on 'end',->
-          jasmine.DEFAULT_TIMEOUT_INTERVAL= original
+          jasmine.DEFAULT_TIMEOUT_INTERVAL= reset
           done()
 
     it 'Convert to <svg> by .png',(done)->
-      original= jasmine.DEFAULT_TIMEOUT_INTERVAL
-      jasmine.DEFAULT_TIMEOUT_INTERVAL= 20000
+      jasmine.DEFAULT_TIMEOUT_INTERVAL= 30000
       
-      gulp.src 'fixtures/*.png'
+      gulp.src 'public_html/*.png'
         .pipe Jaggy()
         .pipe gulp.dest 'public_html'
         .on 'end',->
-          jasmine.DEFAULT_TIMEOUT_INTERVAL= original
+          jasmine.DEFAULT_TIMEOUT_INTERVAL= reset
           done()
 
     it 'Convert to <svg> by .jpg',(done)->
-      original= jasmine.DEFAULT_TIMEOUT_INTERVAL
-      jasmine.DEFAULT_TIMEOUT_INTERVAL= 20000
+      jasmine.DEFAULT_TIMEOUT_INTERVAL= 30000
       
-      gulp.src 'fixtures/*.jpg'
+      gulp.src 'public_html/*.jpg'
         .pipe Jaggy()
         .pipe gulp.dest 'public_html'
         .on 'end',->
-          jasmine.DEFAULT_TIMEOUT_INTERVAL= original
+          jasmine.DEFAULT_TIMEOUT_INTERVAL= reset
           done()
 
     it 'Convert to pixels by gutil.File',(done)->
@@ -43,9 +41,9 @@ describe 'Jaggy',->
 
       file= new gutil.File
         cwd: __dirname
-        base: "#{__dirname}/fixtures/"
-        path: "#{__dirname}/fixtures/moon.png"
-        contents: fs.readFileSync "#{__dirname}/fixtures/moon.png"
+        base: "#{__dirname}/public_html/"
+        path: "#{__dirname}/public_html/moon.png"
+        contents: fs.readFileSync "#{__dirname}/public_html/moon.png"
 
       Jaggy.readImageData file,(error,pixels)->
         expect(error).toEqual(null)

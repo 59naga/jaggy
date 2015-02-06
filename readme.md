@@ -11,6 +11,17 @@ gulp.src ['fixtures/*.png','fixtures/*.gif','fixtures/*.jpg']
   .pipe gulp.dest 'public_html'
 ```
 
+## Use for browser
+```html
+<script src="/src/jaggy.browser.js"></script>
+<script>
+  jaggy('moon.png',function(error,svg){
+    console.log(svg);//object: <svg version="1.1" ...>...</svg>
+  });
+</script>
+```
+***Doesn't work `file:///` schema***
+
 ## Why?
 Doesn't work [`image-rendering:crisp-edges`](http://caniuse.com/#feat=css-crisp-edges).
 However, Can work on the [`<svg shape-rendering="crispEdges">`](http://caniuse.com/#feat=svg).
@@ -19,7 +30,7 @@ Gotcha, save the jaggy.
 ## Feture
 * ***TEST***
 * <del>Support Animation GIF</del> <ins>unstable</ins>
-* Browser Friendly ([Like this](https://github.com/59naga/vectorizer/))
+* <del>Browser Friendly ([Like this](https://github.com/59naga/vectorizer/))</del>
 * Support `install -g`
 
 # License
