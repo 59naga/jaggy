@@ -4,29 +4,20 @@ reset= jasmine.DEFAULT_TIMEOUT_INTERVAL
 
 describe 'Jaggy',->
   describe 'Standard Usage',->
+    jasmine.DEFAULT_TIMEOUT_INTERVAL= 5000
     it 'Convert to <svg> by .gif',(done)->
-      jasmine.DEFAULT_TIMEOUT_INTERVAL= 30000
-
       gulp.src 'public_html/*.gif'
         .pipe Jaggy()
         .pipe gulp.dest 'public_html'
-        .on 'end',->
-          jasmine.DEFAULT_TIMEOUT_INTERVAL= reset
-          done()
+        .on 'end',done
 
     it 'Convert to <svg> by .png',(done)->
-      jasmine.DEFAULT_TIMEOUT_INTERVAL= 30000
-      
       gulp.src 'public_html/*.png'
         .pipe Jaggy()
         .pipe gulp.dest 'public_html'
-        .on 'end',->
-          jasmine.DEFAULT_TIMEOUT_INTERVAL= reset
-          done()
+        .on 'end',done
 
     it 'Convert to <svg> by .jpg',(done)->
-      jasmine.DEFAULT_TIMEOUT_INTERVAL= 30000
-      
       gulp.src 'public_html/*.jpg'
         .pipe Jaggy()
         .pipe gulp.dest 'public_html'
