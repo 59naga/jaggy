@@ -1,0 +1,25 @@
+{
+  "name": "jaggy",
+  "version": "0.0.5",
+  "homepage": "https://github.com/59naga/jaggy",
+  "authors": [
+    "59naga <i59naga@icloud.com>"
+  ],
+  "description": "<img src=\"pixel-art\"> to <svg>",
+  "main": "sources/jaggy.browser.min.js",
+  "keywords": [
+    "pixel",
+    "pixel-art",
+    "get-pixels",
+    "gif",
+    "svg",
+    "browserify"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public_html"
+  ]
+}

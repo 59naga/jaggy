@@ -1,26 +1,44 @@
-# Jaggy
-[![NPM version][npm-image]][npm]
-[![Build Status][travis-image]][travis]
-[![Dependency Status][depstat-image]][depstat]
+# Jaggy [![NPM version][npm-image]][npm] [![Build Status][travis-image]][travis] [![Dependency Status][depstat-image]][depstat]
 
 ## Use for gulp
-```coffee
-jaggy= require 'jaggy'
-gulp.src ['fixtures/*.png','fixtures/*.gif','fixtures/*.jpg']
-  .pipe jaggy()
-  .pipe gulp.dest 'public_html'
+```bash
+$ npm install jaggy gulp
+```
+
+gulpfile.js
+
+```js
+var jaggy,gulp;
+jaggy= require('jaggy');
+gulp= require('gulp');
+gulp.task('default',function(){
+  gulp.src(['*.png','*.gif','*.jpg'])
+    .pipe(jaggy())
+    .pipe(gulp.dest('./'))
+  ;
+});
+```
+
+```
+$ gulp # convert to .svg
 ```
 
 ## Use for browser
+```bash
+$ bower install jaggy
+```
+
 ```html
-<script src="/src/jaggy.browser.js"></script>
+<script src="bower_components/jaggy/sources/jaggy.browser.js"></script>
 <script>
-  jaggy('moon.png',function(error,svg){
+  jaggy('your_pixelart.png',function(error,svg){
     console.log(svg);//object: <svg version="1.1" ...>...</svg>
   });
 </script>
 ```
-***Doesn't work `file:///` schema***
+***Doesn't work [Cross-origin][1]***
+
+[1]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
 
 ## Why?
 Doesn't work [`image-rendering:crisp-edges`](http://caniuse.com/#feat=css-crisp-edges).
@@ -42,3 +60,4 @@ MIT by [@59naga](https://twitter.com/horse_n_deer)
 [travis]: https://travis-ci.org/59naga/jaggy
 [depstat-image]: https://gemnasium.com/59naga/jaggy.svg
 [depstat]: https://gemnasium.com/59naga/jaggy
+
