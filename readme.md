@@ -19,7 +19,7 @@ gulp.task('default',function(){
 });
 ```
 
-```
+```bash
 $ gulp # convert to .svg
 ```
 
