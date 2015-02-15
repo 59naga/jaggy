@@ -3,16 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
+  <script src="../bower_components/angular/angular.min.js"></script>
   <script src="../sources/jaggy.browser.min.js"></script>
-  <script>
-    jaggy('moon.png',function(error,svg){
+  <script title="for browser">
+    window.jaggy('moon.png',function(error,svg){
+      document.querySelector('section').appendChild(svg);
+    });
+
+    window.jaggy('moon.png',{glitch:1},function(error,svg){
       document.body.appendChild(svg);
     });
   </script>
+  <script title="for angular.js">
+    angular.module('myApp',['jaggy']);
+  </script>
 </head>
-<body>
-  <object data="tumblr_n39vfaV03s1rnbw6mo1_400.svg" type="image/svg+xml"></object>
-  <img src="chrono_trigger.svg" alt="">
-  <img src="yuno.svg" alt="">
+<body ng-app="myApp">
+  <section>
+    <h2>via gulp.js (<code>$ npm test</code>)</h2>
+    <object data="tumblr_n39vfaV03s1rnbw6mo1_400.svg" alt="via gulp" type="image/svg+xml"></object>
+    <img src="chrono_trigger.svg" alt="via gulp">
+
+    <h2>via angular.js</h2>
+    <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy alt="for Angular.js">
+
+    <h2>via jaggy API(<code>window.jaggy</code>)</h2>
+    <figure>
+      <!-- window.jaggy here... -->
+    </figure>
+  </section>
+  <h2>and Glitch</h2>
+  <img src="yuno.svg" alt="via gulp">
+  <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy="glitch:2" alt="for Angular.js">
 </body>
 </html>

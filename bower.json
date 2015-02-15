@@ -1,12 +1,12 @@
 {
   "name": "jaggy",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "homepage": "https://github.com/59naga/jaggy",
   "authors": [
     "59naga <i59naga@icloud.com>"
   ],
   "description": "<img src=\"pixel-art\"> to <svg>",
-  "main": "sources/jaggy.browser.min.js",
+  "main": "sources/jaggy.min.js",
   "keywords": [
     "pixel",
     "pixel-art",
@@ -20,6 +20,10 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "public_html"
-  ]
+    "public_html",
+    "*.coffee"
+  ],
+  "devDependencies": {
+    "angular": "~1.3.13"
+  }
 }

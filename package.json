@@ -1,15 +1,17 @@
 {
   "name": "jaggy",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "is Converting to SVG by pixels",
   "main": "sources/jaggy.js",
   "scripts": {
-    "build-nodejs":"npm run postinstall",
-    "build-browser":"gulp browserify",
+    "build":"npm run build-nodejs && npm run build-browser",
+    "build-nodejs":"npm run pretest",
+    "build-browser":"gulp browserify -min",
 
-    "start": "gulp browserify && open 'http://localhost:8000/public_html/' && python -m SimpleHTTPServer",
-    "postinstall": "coffee -cbp jaggy.coffee > sources/jaggy.js",
+    "start":"npm run preview",
+    "preview": "gulp browserify && open 'http://localhost:8000/public_html/' && python -m SimpleHTTPServer",
 
+    "pretest": "coffee -cbp jaggy.coffee > sources/jaggy.js",
     "test": "npm install && gulp test"
   },
   "dependencies": {

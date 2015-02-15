@@ -11,26 +11,31 @@ Jaggy.gulpPlugin= (options={})->
     Jaggy.readImageData file,(error,pixels)=>
       throw error if error?
 
-      file.path= gutil.replaceExtension file.path,'.svg'
-      file.contents= new Buffer Jaggy.convertToSVG pixels,options
-      @push file
+      Jaggy.convertToSVG pixels,options,(error,svg)=>
+        throw error if error?
 
-      next()
+        file.path= gutil.replaceExtension file.path,'.svg'
+        file.contents= new Buffer svg
+        @push file
+
+        next()
 
 # Use url for browser
 Jaggy.createSVG= (url,args...)->
   throw new Error 'url is not string' if typeof url isnt 'string'
   callback= null
+  options= {}
   args.forEach (arg)-> switch typeof arg
     when 'function' then callback= arg
+    when 'object' then options= arg
+  options.outerHTML?= false
   
   getPixels= require 'get-pixels'
   getPixels url,(error,pixels)->
     return callback error if error?
 
     if pixels.shape.length is 3
-      svg= Jaggy.convertToSVG pixels,outerHTML:false
-      callback null,svg
+      Jaggy.convertToSVG pixels,options,callback
 
     if pixels.shape.length is 4
       xhr= new XMLHttpRequest
@@ -45,10 +50,34 @@ Jaggy.createSVG= (url,args...)->
         anime.disposals= anime.images.map (image)-> image.disposal
         pixels.anime= anime
 
-        svg= Jaggy.convertToSVG pixels,outerHTML:false
-        callback null,svg
+        Jaggy.convertToSVG pixels,options,callback
 
-Jaggy.convertToSVG= (pixels,options={})->
+# Use for angular.js
+Jaggy.angularModule= (window)->
+  angularModule= window.angular.module 'jaggy',[]
+  angularModule.directive 'jaggy',->
+    (scope,element,attrs)->
+      element.css 'display','none'
+
+      options= {}
+      if attrs.jaggy
+        for param in attrs.jaggy.split ';'
+          [key,value]= param.split ':'
+          options[key]= value
+
+      Jaggy.createSVG attrs.src,options,(error,svg)->
+        throw error if error?
+        element.replaceWith svg
+
+Jaggy.convertToSVG= (pixels,args...)->
+  callback= null
+  options= {}
+  args.forEach (arg)-> switch typeof arg
+    when 'function' then callback= arg
+    when 'object' then options= arg
+  options.glitch= +options.glitch if typeof options.glitch is 'string'
+  return callback new Error('glitch is 0') if options.glitch is 0
+
   jaggy= Jaggy.convert pixels,options
 
   svg= jaggy.toSVG options
@@ -57,9 +86,8 @@ Jaggy.convertToSVG= (pixels,options={})->
   if options.outerHTML isnt false
     svg= svg.outerHTML.replace ' viewbox=',' viewBox='# fix to lowerCamel
     svg= svg.replace(/&gt;/g,'>')# enable querySelector
-    return svg
 
-  svg
+  callback null,svg
 
 Jaggy.enableAnimation= (svg)->
   throw new Error('Can enable appended element only') if svg.parentNode is null
@@ -196,7 +224,7 @@ class Jaggy.Frame# has many Color
     return if image.data is undefined
 
     i= 0
-    increment= if options.glitch then options.glitch else 4
+    increment= if options.glitch? then options.glitch else 4
     while (begin+i) <= end
       # if @disposal is 3
       #   values.push image.data[i+0]
@@ -289,6 +317,7 @@ if typeof window isnt 'undefined'
   Jaggy.createTextNode= document.createTextNode.bind document
 
   window.jaggy= Jaggy
+  Jaggy.angularModule window if typeof window.angular is 'object'
 else
   domlite= require('dom-lite').document
   Jaggy.createElement= domlite.createElement.bind domlite

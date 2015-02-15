@@ -40,9 +40,11 @@ gulp.task 'browserify',(done)->
     .on 'end',->
       filename= 'sources/jaggy.browser.js'
       mainfile= 'sources/jaggy.browser.min.js'
+      script= "cp #{filename} #{mainfile}"
+      script= "node_modules/.bin/uglifyjs #{filename} > #{mainfile}" if '-min' in process.argv
 
       exec= require('child_process').exec
-      exec "node_modules/.bin/uglifyjs #{filename} > #{mainfile}",()->
+      exec script,()->
         fs= require 'fs'
         fs.unlinkSync filename
         done()

@@ -1,4 +1,4 @@
-Jaggy= require './jaggy.coffee'
+Jaggy= require './sources/jaggy.js'
 gulp= require 'gulp'
 reset= jasmine.DEFAULT_TIMEOUT_INTERVAL
 
@@ -24,6 +24,12 @@ describe 'Jaggy',->
         .on 'end',->
           jasmine.DEFAULT_TIMEOUT_INTERVAL= reset
           done()
+
+    it 'Glitch to <svg> by .png',(done)->
+      gulp.src 'public_html/yuno.png'
+        .pipe Jaggy glitch:3
+        .pipe gulp.dest 'public_html'
+        .on 'end',done
 
     it 'Convert to pixels by gutil.File',(done)->
       gutil= require 'gulp-util'

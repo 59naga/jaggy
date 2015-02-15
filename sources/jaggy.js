@@ -27,39 +27,47 @@ Jaggy.gulpPlugin = function(options) {
         if (error != null) {
           throw error;
         }
-        file.path = gutil.replaceExtension(file.path, '.svg');
-        file.contents = new Buffer(Jaggy.convertToSVG(pixels, options));
-        _this.push(file);
-        return next();
+        return Jaggy.convertToSVG(pixels, options, function(error, svg) {
+          if (error != null) {
+            throw error;
+          }
+          file.path = gutil.replaceExtension(file.path, '.svg');
+          file.contents = new Buffer(svg);
+          _this.push(file);
+          return next();
+        });
       };
     })(this));
   });
 };
 
 Jaggy.createSVG = function() {
-  var args, callback, getPixels, url;
+  var args, callback, getPixels, options, url;
   url = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
   if (typeof url !== 'string') {
     throw new Error('url is not string');
   }
   callback = null;
+  options = {};
   args.forEach(function(arg) {
     switch (typeof arg) {
       case 'function':
         return callback = arg;
+      case 'object':
+        return options = arg;
     }
   });
+  if (options.outerHTML == null) {
+    options.outerHTML = false;
+  }
   getPixels = require('get-pixels');
   return getPixels(url, function(error, pixels) {
-    var svg, xhr;
+    var xhr;
     if (error != null) {
       return callback(error);
     }
     if (pixels.shape.length === 3) {
-      svg = Jaggy.convertToSVG(pixels, {
-        outerHTML: false
-      });
-      callback(null, svg);
+      Jaggy.convertToSVG(pixels, options, callback);
     }
     if (pixels.shape.length === 4) {
       xhr = new XMLHttpRequest;
@@ -80,19 +88,56 @@ Jaggy.createSVG = function() {
           return image.disposal;
         });
         pixels.anime = anime;
-        svg = Jaggy.convertToSVG(pixels, {
-          outerHTML: false
-        });
-        return callback(null, svg);
+        return Jaggy.convertToSVG(pixels, options, callback);
       };
     }
   });
 };
 
-Jaggy.convertToSVG = function(pixels, options) {
-  var jaggy, svg;
-  if (options == null) {
-    options = {};
+Jaggy.angularModule = function(window) {
+  var angularModule;
+  angularModule = window.angular.module('jaggy', []);
+  return angularModule.directive('jaggy', function() {
+    return function(scope, element, attrs) {
+      var key, options, param, value, _i, _len, _ref, _ref1;
+      element.css('display', 'none');
+      options = {};
+      if (attrs.jaggy) {
+        _ref = attrs.jaggy.split(';');
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          param = _ref[_i];
+          _ref1 = param.split(':'), key = _ref1[0], value = _ref1[1];
+          options[key] = value;
+        }
+      }
+      return Jaggy.createSVG(attrs.src, options, function(error, svg) {
+        if (error != null) {
+          throw error;
+        }
+        return element.replaceWith(svg);
+      });
+    };
+  });
+};
+
+Jaggy.convertToSVG = function() {
+  var args, callback, jaggy, options, pixels, svg;
+  pixels = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+  callback = null;
+  options = {};
+  args.forEach(function(arg) {
+    switch (typeof arg) {
+      case 'function':
+        return callback = arg;
+      case 'object':
+        return options = arg;
+    }
+  });
+  if (typeof options.glitch === 'string') {
+    options.glitch = +options.glitch;
+  }
+  if (options.glitch === 0) {
+    return callback(new Error('glitch is 0'));
   }
   jaggy = Jaggy.convert(pixels, options);
   svg = jaggy.toSVG(options);
@@ -102,9 +147,8 @@ Jaggy.convertToSVG = function(pixels, options) {
   if (options.outerHTML !== false) {
     svg = svg.outerHTML.replace(' viewbox=', ' viewBox=');
     svg = svg.replace(/&gt;/g, '>');
-    return svg;
   }
-  return svg;
+  return callback(null, svg);
 };
 
 Jaggy.enableAnimation = function(svg) {
@@ -313,7 +357,7 @@ Jaggy.Frame = (function() {
       return;
     }
     i = 0;
-    increment = options.glitch ? options.glitch : 4;
+    increment = options.glitch != null ? options.glitch : 4;
     _results = [];
     while ((begin + i) <= end) {
       if (image.data[begin + i + 3] !== 0) {
@@ -452,6 +496,9 @@ if (typeof window !== 'undefined') {
   Jaggy.createElementNS = document.createElementNS.bind(document, 'http://www.w3.org/2000/svg');
   Jaggy.createTextNode = document.createTextNode.bind(document);
   window.jaggy = Jaggy;
+  if (typeof window.angular === 'object') {
+    Jaggy.angularModule(window);
+  }
 } else {
   domlite = require('dom-lite').document;
   Jaggy.createElement = domlite.createElement.bind(domlite);
