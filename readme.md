@@ -47,7 +47,7 @@ $ bower install jaggy
   <script src="bower_components/jaggy/sources/jaggy.browser.js"></script>
   <script>angular.module('myApp',['jaggy'])</script>
 </head>
-<body ng-app>
+<body ng-app="myApp">
   <img src="moon.png" jaggy alt=""> <!-- replaceWith <svg> -->
 </body>
 ```
