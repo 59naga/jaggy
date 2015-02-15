@@ -1,6 +1,6 @@
 {
   "name": "jaggy",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "is Converting to SVG by pixels",
   "main": "sources/jaggy.js",
   "scripts": {
