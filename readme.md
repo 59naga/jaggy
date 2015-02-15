@@ -48,7 +48,7 @@ $ bower install jaggy
   <script>angular.module('myApp',['jaggy'])</script>
 </head>
 <body ng-app>
-  <img src="moon.png" jaggy alt="">
+  <img src="moon.png" jaggy alt=""> <!-- replaceWith <svg> -->
 </body>
 ```
 
@@ -57,9 +57,20 @@ Doesn't work [`image-rendering:crisp-edges`](http://caniuse.com/#feat=css-crisp-
 However, Can work on the [`<svg shape-rendering="crispEdges">`](http://caniuse.com/#feat=svg).
 Gotcha, save the jaggy.
 
-## Options
-Can use `jaggy(url,{glitch:2})`
-### glich:`int 1~3 or increment function`
+## Glitch option
+`{glitch:int}`
+### for gulp
+```js
+.pipe(jaggy({glitch:1}))
+```
+### for browser
+```js
+jaggy('your_pixelart.png',{glitch:2},function(error,svg){
+```
+### for angular.js
+```html
+<img src="your_pixelart.gif" jaggy="glitch:3" alt="">
+```
 
 ## Feture
 * Support `install -g`
@@ -73,4 +84,3 @@ MIT by [@59naga](https://twitter.com/horse_n_deer)
 [travis]: https://travis-ci.org/59naga/jaggy
 [depstat-image]: https://gemnasium.com/59naga/jaggy.svg
 [depstat]: https://gemnasium.com/59naga/jaggy
-
