@@ -1,8 +1,11 @@
 {
   "name": "jaggy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "is Converting to SVG by pixels",
   "main": "sources/jaggy.js",
+  "bin": {
+    "jaggy": "./bin/jaggy"
+  },
   "scripts": {
     "build":"npm run build-nodejs && npm run build-browser",
     "build-nodejs":"npm run pretest",
