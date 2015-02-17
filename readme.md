@@ -79,7 +79,7 @@ jaggy('your_pixelart.png',{glitch:2},function(error,svg){
 ```
 ### CLI
 ```bash
-jaggy public_html -g 2
+jaggy public_html -g 5
 ```
 
 # License
