@@ -77,6 +77,10 @@ jaggy('your_pixelart.png',{glitch:2},function(error,svg){
 ```html
 <img src="your_pixelart.gif" jaggy="glitch:3" alt="">
 ```
+### CLI
+```bash
+jaggy public_html -g 2
+```
 
 # License
 MIT by [@59naga](https://twitter.com/horse_n_deer)
