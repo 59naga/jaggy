@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+
+var path,cwd,mbo;
+path= require('path');
+pwd= path.dirname(require('fs').realpathSync(__filename));
+mbo= path.join(pwd,'../');
+
+require('coffee-script/register');
+require(mbo+'jaggy').cli();

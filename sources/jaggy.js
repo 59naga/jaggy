@@ -211,6 +211,41 @@ Jaggy.convert = function(pixels, options) {
   return new Jaggy.Frames(pixels, options);
 };
 
+Jaggy.cli = function() {
+  var arg, commander, glob, globs, gulp, path, _i, _len, _ref;
+  commander = require('commander');
+  commander.version(require('./package.json').version).usage('file/directory [options...]').option('-r recursive', 'Convert pixelarts in recursive directory').option('-g --glitch <increment>', 'Glitch color palettes', 4).parse(process.argv);
+  if (commander.args.length === 0) {
+    commander.help();
+  }
+  path = require('path');
+  globs = [];
+  _ref = commander.args;
+  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+    arg = _ref[_i];
+    if (arg.match(/(\.gif|\.jpg|\.png)$/)) {
+      glob = path.resolve(arg);
+    } else {
+      glob = path.resolve(arg + "/*.+(gif|png|jpg)");
+      if (commander.recursive) {
+        glob = path.resolve(arg + "/**/*.+(gif|png|jpg)");
+      }
+    }
+    globs.push(glob);
+  }
+  globs.push('!**/*.!(*gif|*png|*jpg)');
+  gulp = require('gulp');
+  return gulp.src(globs, {
+    base: process.cwd()
+  }).pipe(Jaggy.gulpPlugin({
+    glitch: commander.glitch
+  })).pipe(gulp.dest(process.cwd())).on('data', function(file) {
+    return console.log('Convert', path.relative(process.cwd(), file.path.replace(/(\.gif|\.jpg|\.png)$/, '.svg')));
+  }).on('end', function() {
+    return process.exit();
+  });
+};
+
 Jaggy.Frames = (function() {
   var animation, uuid;
 

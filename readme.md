@@ -52,6 +52,12 @@ $ bower install jaggy
 </body>
 ```
 
+## CLI
+```bash
+$ npm install jaggy -g
+$ jaggy public_html
+```
+
 ## Why?
 Doesn't work [`image-rendering:crisp-edges`](http://caniuse.com/#feat=css-crisp-edges).
 However, Can work on the [`<svg shape-rendering="crispEdges">`](http://caniuse.com/#feat=svg).
@@ -71,9 +77,6 @@ jaggy('your_pixelart.png',{glitch:2},function(error,svg){
 ```html
 <img src="your_pixelart.gif" jaggy="glitch:3" alt="">
 ```
-
-## Feture
-* Support `install -g`
 
 # License
 MIT by [@59naga](https://twitter.com/horse_n_deer)
