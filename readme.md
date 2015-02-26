@@ -1,4 +1,4 @@
-# Jaggy [![NPM version][npm-image]][npm] [![Build Status][travis-image]][travis] [![Dependency Status][depstat-image]][depstat]
+# Jaggy [![NPM version][npm-image]][npm] [![Bower version][bower-image]][bower] [![Build Status][travis-image]][travis] [![Dependency Status][depstat-image]][depstat]
 
 ## for gulp
 ```bash
@@ -87,6 +87,8 @@ MIT by [@59naga](https://twitter.com/horse_n_deer)
 
 [npm-image]: https://badge.fury.io/js/jaggy.svg
 [npm]: https://npmjs.org/package/jaggy
+[bower-image]: https://badge.fury.io/bo/jaggy.svg
+[bower]: http://badge.fury.io/bo/jaggy
 [travis-image]: https://travis-ci.org/59naga/jaggy.svg?branch=master
 [travis]: https://travis-ci.org/59naga/jaggy
 [depstat-image]: https://gemnasium.com/59naga/jaggy.svg
