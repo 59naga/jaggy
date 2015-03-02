@@ -4,3 +4,13 @@ node_js:
 script: 'npm test'
 after_success:
   - 'npm run coverage && npm run coveralls'
+
+env:
+  global:
+    secure: Ntsmce9vaWJWoAD6aFE9PbufcENR+bM49LvLjjSM+kZ8f92DVngBEwKA9tPh37KNCr935h4MxSJqe+OHQ50ObuJ5wiMJRsXc+4lvC4MLOo2ntIZd2qdol2SR+89LTT9YAiCX3JGnc/Us1KaUBh/hJ9A/OyxUF8rJLy6dDGldnW4=
+
+deploy:
+  provider: npm
+  email: i59naga@icloud.com
+  api_key:
+    secure: LcnRlhCoHBQSA/noh2latGZeLhgWm3ImcraLo7bx96Xl/b+rCv8Y1txG+OPtWUpVF9Euwan6J3QQpivRgHvSf9pwAY3U0mymHFf1Ho9UIen7pHgB59/JTdPxlAH2U6I4zc/0tXdo1kznKpIjHqo3MqCYWQF2jT9Kupcgcek5sOc=
