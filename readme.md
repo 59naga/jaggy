@@ -1,4 +1,4 @@
-# Jaggy [![NPM version][npm-image]][npm] [![Bower version][bower-image]][bower] [![Build Status][travis-image]][travis] [![Dependency Status][depstat-image]][depstat]
+# ![jaggy](.png) Jaggy [![NPM version][npm-image]][npm] [![Bower version][bower-image]][bower] [![Build Status][travis-image]][travis] [![Dependency Status][depstat-image]][depstat]
 
 ## for gulp
 ```bash
