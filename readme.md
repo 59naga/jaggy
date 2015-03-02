@@ -1,4 +1,4 @@
-# ![jaggy](.png) Jaggy [![NPM version][npm-image]][npm] [![Bower version][bower-image]][bower] [![Build Status][travis-image]][travis] [![Dependency Status][depstat-image]][depstat]
+# ![jaggy](.png) Jaggy [![NPM version][npm-image]][npm][![Bower version][bower-image]][bower] [![Build Status][travis-image]][travis] [![Coverage Status][coveralls-image]][coveralls]
 
 ## for gulp
 ```bash
@@ -82,8 +82,14 @@ jaggy('your_pixelart.png',{glitch:2},function(error,svg){
 jaggy public_html -g 5
 ```
 
-# License
-MIT by [@59naga](https://twitter.com/horse_n_deer)
+## Known issue
+* Animated gif Can be convert, But, It's so very very heavy.
+
+License
+=========================
+MIT by 59naga
+
+[.svg]: https://cdn.rawgit.com/59naga/jaggy/master/.svg
 
 [npm-image]: https://badge.fury.io/js/jaggy.svg
 [npm]: https://npmjs.org/package/jaggy
@@ -91,5 +97,5 @@ MIT by [@59naga](https://twitter.com/horse_n_deer)
 [bower]: http://badge.fury.io/bo/jaggy
 [travis-image]: https://travis-ci.org/59naga/jaggy.svg?branch=master
 [travis]: https://travis-ci.org/59naga/jaggy
-[depstat-image]: https://gemnasium.com/59naga/jaggy.svg
-[depstat]: https://gemnasium.com/59naga/jaggy
+[coveralls-image]: https://coveralls.io/repos/59naga/jaggy/badge.svg?branch=master
+[coveralls]: https://coveralls.io/r/59naga/jaggy?branch=master

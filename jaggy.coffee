@@ -2,6 +2,36 @@ Jaggy= ->
   Jaggy.createSVG.apply null,arguments if typeof window isnt 'undefined'
   Jaggy.gulpPlugin.apply null,arguments if typeof window is 'undefined'
 
+Jaggy.cli= ->
+  commander= require 'commander'
+  commander
+    .version require('./package.json').version
+    .usage 'file/directory [options...]'
+    .option '-r recursive','Convert pixelarts in recursive directory'
+    .option '-o output <directory>','Output directory <./>','.'
+    .option '-g --glitch <increment>','Glitch color palettes <4>',4
+    .parse process.argv
+  commander.help() if commander.args.length is 0
+
+  path= require 'path'
+  globs= []
+  for arg in commander.args
+    if arg.match(/(\.gif|\.jpg|\.png)$/)
+       glob= path.resolve arg
+    else
+      glob= path.resolve "#{arg}/*.+(gif|png|jpg)"
+      glob= path.resolve "#{arg}/**/*.+(gif|png|jpg)" if commander.recursive
+    globs.push glob
+  globs.push '!**/*.!(*gif|*png|*jpg)' # Ignore unsupport extension
+
+  gulp= require 'gulp'
+  gulp.src globs,base:process.cwd()
+    .pipe Jaggy.gulpPlugin glitch:commander.glitch
+    .pipe gulp.dest path.resolve commander.output
+    .on 'data',(file)-> console.log 'Convert',path.relative process.cwd(),file.path.replace(/(\.gif|\.jpg|\.png)$/,'.svg')
+    .on 'end',->
+      process.exit()
+
 Jaggy.gulpPlugin= (options={})->
   gutil= require 'gulp-util'
   through2= require 'through2'
@@ -130,36 +160,6 @@ Jaggy.convert= (pixels,options={})->
   pixels.channel= channel
 
   new Jaggy.Frames pixels,options
-
-Jaggy.cli= ->
-  commander= require 'commander'
-  commander
-    .version require('./package.json').version
-    .usage 'file/directory [options...]'
-    .option '-r recursive','Convert pixelarts in recursive directory'
-    .option '-o output <directory>','Output directory <./>','.'
-    .option '-g --glitch <increment>','Glitch color palettes <4>',4
-    .parse process.argv
-  commander.help() if commander.args.length is 0
-
-  path= require 'path'
-  globs= []
-  for arg in commander.args
-    if arg.match(/(\.gif|\.jpg|\.png)$/)
-       glob= path.resolve arg
-    else
-      glob= path.resolve "#{arg}/*.+(gif|png|jpg)"
-      glob= path.resolve "#{arg}/**/*.+(gif|png|jpg)" if commander.recursive
-    globs.push glob
-  globs.push '!**/*.!(*gif|*png|*jpg)' # Ignore unsupport extension
-
-  gulp= require 'gulp'
-  gulp.src globs,base:process.cwd()
-    .pipe Jaggy.gulpPlugin glitch:commander.glitch
-    .pipe gulp.dest path.resolve commander.output
-    .on 'data',(file)-> console.log 'Convert',path.relative process.cwd(),file.path.replace(/(\.gif|\.jpg|\.png)$/,'.svg')
-    .on 'end',->
-      process.exit()
 
 class Jaggy.Frames
   constructor:(image,options={})->

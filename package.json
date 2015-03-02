@@ -1,21 +1,23 @@
 {
   "name": "jaggy",
-  "version": "0.1.1",
+  "bin" : "jaggy",
+  "main": "jaggy.pomace.js",
   "description": "is Converting to SVG by pixels",
-  "main": "sources/jaggy.js",
-  "bin": {
-    "jaggy": "./bin/jaggy"
-  },
+  "version": "0.1.1",
+
   "scripts": {
     "build":"npm run build-nodejs && npm run build-browser",
     "build-nodejs":"npm run pretest",
     "build-browser":"gulp browserify -min",
 
-    "start":"node ./bin/jaggy public_html -o hogekosan -g 2",
+    "start":"jaggy public_html -o hogekosan -g 2",
     "preview": "gulp browserify && open 'http://localhost:8000/public_html/' && python -m SimpleHTTPServer",
+    
+    "test": "jasminetea . -v",
+    "clean": "rm public_html/*.svg",
 
-    "pretest": "coffee -cbp jaggy.coffee > sources/jaggy.js",
-    "test": "npm install && gulp test"
+    "coverage": "ibrik cover jaggy.coffee && istanbul report html",
+    "coveralls": "coveralls < ./coverage/lcov.info && rm -rf coverage"
   },
   "dependencies": {
     "coffee-script": "^1.9.0",
@@ -35,16 +37,18 @@
     "gulp-jasmine": "^2.0.0",
     "gulp-watch": "^4.1.0",
     "uglify-js": "^2.4.16",
-    "vinyl-source-stream": "^1.0.0"
+    "vinyl-source-stream": "^1.0.0",
+    "ibrik": "^2.0.0",
+    "istanbul": "^0.3.6",
+    "jasminetea": "^0.1.4"
   },
+  
   "keywords": [
-    "pixel",
-    "pixel-art",
+    "pixelart",
     "get-pixels",
-    "gif",
-    "decode",
-    "browserify",
-    "gulpplugin"
+    "cross-platform",
+    "gulpplugin",
+    "gif"
   ],
   "repository": {
     "type": "git",
@@ -54,6 +58,6 @@
     "url": "https://github.com/59naga/jaggy/issues"
   },
   "homepage": "https://github.com/59naga/jaggy",
-  "author": "59naga",
+  "author": "59naga <i59naga@icloud.com> (http://berabou.me/)",
   "license": "MIT"
 }

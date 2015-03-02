@@ -1,10 +1,10 @@
-Jaggy= require './sources/jaggy.js'
+Jaggy= require './'
 gulp= require 'gulp'
-reset= jasmine.DEFAULT_TIMEOUT_INTERVAL
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL= 10000
 
 describe 'Jaggy',->
   describe 'Standard Usage',->
-    jasmine.DEFAULT_TIMEOUT_INTERVAL= 6000
     it 'Convert to <svg> by .gif',(done)->
       gulp.src 'public_html/*.gif'
         .pipe Jaggy()
@@ -22,7 +22,6 @@ describe 'Jaggy',->
         .pipe Jaggy()
         .pipe gulp.dest 'public_html'
         .on 'end',->
-          jasmine.DEFAULT_TIMEOUT_INTERVAL= reset
           done()
 
     it 'Glitch to <svg> by .png',(done)->
