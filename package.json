@@ -3,7 +3,7 @@
   "bin" : "jaggy",
   "main": "jaggy.pomace.js",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.1",
+  "version": "0.1.2",
 
   "scripts": {
     "build":"npm run build-nodejs && npm run build-browser",
