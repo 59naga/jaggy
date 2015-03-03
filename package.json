@@ -13,11 +13,12 @@
     "start":"jaggy public_html -o hogekosan -g 2",
     "preview": "gulp browserify && open 'http://localhost:8000/public_html/' && python -m SimpleHTTPServer",
     
-    "test": "jasminetea . -v",
-    "clean": "rm public_html/*.svg",
+    "pretest": "rm -rf node_modules/ibrik/node_modules/coffee-script",
+    "test": "ibrik cover jasminetea -- . -v && istanbul report html",
+    "coveralls": "coveralls < ./coverage/lcov.info && rm -rf coverage",
 
-    "coverage": "ibrik cover jaggy.coffee && istanbul report html",
-    "coveralls": "coveralls < ./coverage/lcov.info && rm -rf coverage"
+    "lint": "jasminetea . -l \"*.coffee,!*.spec.coffee\"",
+    "clean": "rm public_html/*.svg"
   },
   "dependencies": {
     "coffee-script": "^1.9.0",
@@ -33,6 +34,7 @@
   "devDependencies": {
     "browserify": "^8.1.3",
     "coffeeify": "^1.0.0",
+    "coveralls": "^2.11.2",
     "gulp-connect": "^2.2.0",
     "gulp-jasmine": "^2.0.0",
     "gulp-watch": "^4.1.0",
