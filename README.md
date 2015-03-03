@@ -89,7 +89,7 @@ License
 =========================
 MIT by 59naga
 
-[.svg]: https://cdn.rawgit.com/59naga/jaggy/master/.svg
+[.svg]: https://cdn.rawgit.com/59naga/jaggy/master/.svg?
 
 [npm-image]: https://badge.fury.io/js/jaggy.svg
 [npm]: https://npmjs.org/package/jaggy
