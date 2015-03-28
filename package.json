@@ -3,7 +3,7 @@
   "main": "jaggy",
   "bin": "jaggy",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "scripts": {
     "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify > public/jaggy.browser.js",
     "prestart": "onefile --json --output public/pkgs",
@@ -11,8 +11,7 @@
     "convert": "jaggy public -o hogekosan -g 2",
     "test": "jasminetea test --verbose --cover --report",
     "posttest": "rm public/*.svg",
-    "prepublish": "npm run build",
-    "publish": "npm publish"
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "coffee-script": "^1.9.0",
