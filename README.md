@@ -87,7 +87,9 @@ jaggy public_html -g 5
 
 License
 =========================
-MIT by 59naga
+[MIT][License] by 59naga
+
+[License]: http://59naga.mit-license.org/
 
 [.svg]: https://cdn.rawgit.com/59naga/jaggy/master/.svg?
 

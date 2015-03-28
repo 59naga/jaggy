@@ -1,3 +1,18 @@
 #!/usr/bin/env node
 
-require('./').cli();
+if(typeof require('module')._extensions['.coffee']==='undefined'){
+  // Avoid conflicts with another version
+  require('coffee-script/register');
+}
+var jaggy= require('./lib/jaggy.coffee');
+
+if(module.parent===null){
+  process.on('uncaughtException',function(error){
+    throw error;
+    process.exit(1);
+  });
+  
+  jaggy.cli(process.argv.slice(2));
+}
+
+module.exports= jaggy;

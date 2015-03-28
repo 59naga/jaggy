@@ -1,12 +1,12 @@
 {
   "name": "jaggy",
-  "version": "0.0.7",
+  "version": "0.1.3",
   "homepage": "https://github.com/59naga/jaggy",
   "authors": [
     "59naga <i59naga@icloud.com>"
   ],
   "description": "<img src=\"pixel-art\"> to <svg>",
-  "main": "sources/jaggy.browser.min.js",
+  "main": "public/jaggy.browser.js",
   "keywords": [
     "pixel",
     "pixel-art",
