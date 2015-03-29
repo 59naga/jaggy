@@ -82,8 +82,24 @@ jaggy('your_pixelart.png',{glitch:2},function(error,svg){
 jaggy public_html -g 5
 ```
 
+## Caching a converted svg for angular.js
+```javascript
+app= anuglar.module('app',['jaggy'])
+app.constant('jaggyConfig',{
+  useCache: false,// default: true
+  useEmptyImage: false,// default: true
+});
+```
+
+### .useCache
+Caching a converted svg by localStorage.
+
+### .useEmptyImage
+Replace empty image instead of Error. e.g. `<svg><path fill="rgba(0,0,0,0.50)"/>`
+
 ## Known issue
 * Animated gif Can be convert, But, It's so very very heavy.
+* Uncaught QuotaExceededError: Failed to execute 'setItem' on 'Storage': Setting the value of `jaggy:url` exceeded the quota. due to Huge Animationed gif
 
 License
 =========================

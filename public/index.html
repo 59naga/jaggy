@@ -6,17 +6,21 @@
   <script src="pkgs.js"></script>
   <script src="jaggy.browser.js"></script>
   <script title="for browser">
-    window.jaggy('moon.png',function(error,svg){
+    jaggy('moon.png',function(error,svg){
       document.querySelector('section').appendChild(svg);
     });
 
-    window.jaggy('moon.png',{glitch:1},function(error,svg){
+    jaggy('moon.png',{glitch:1},function(error,svg){
       document.body.appendChild(svg);
     });
   </script>
   <script title="for angular.js">
-    angular.module('myApp',['jaggy']);
+    var app=angular.module('myApp',['jaggy']);
+    // app.constant('jaggyConfig',{useCache:false,useEmptyImage:false})
   </script>
+  <style>
+    svg{width:100%}
+  </style>
 </head>
 <body ng-app="myApp">
   <section>
@@ -27,6 +31,7 @@
     <h2>via angular.js</h2>
     <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy alt="for Angular.js">
     <img ng-src="yuno.png" jaggy alt="for Angular.js">
+    <img ng-src="comeon! emptyimage" jaggy alt="for Angular.js">
 
     <h2>via jaggy API(<code>window.jaggy</code>)</h2>
     <figure>

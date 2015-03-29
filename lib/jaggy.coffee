@@ -59,6 +59,11 @@ Jaggy.createSVG= (url,args...)->
     when 'function' then callback= arg
     when 'object' then options= arg
   options.outerHTML?= false
+
+  if options.cache
+    options.cacheUrl= url
+    cache= Jaggy.getCache url
+    return callback null,cache if cache? and not options.noCache?
   
   getPixels= require 'get-pixels'
   getPixels url,(error,pixels)->
@@ -82,10 +87,25 @@ Jaggy.createSVG= (url,args...)->
 
         Jaggy.convertToSVG pixels,options,callback
 
+Jaggy.getCache= (url)->
+  localStorage.getItem 'jaggy:'+url
+Jaggy.setCache= (url,cache)->
+  try
+    localStorage.setItem 'jaggy:'+url,cache
+  catch error
+    localStorage.removeItem 'jaggy:'+url
+    
+    console.error error
+
 # Use for angular.js
 Jaggy.angularModule= (window)->
   angularModule= window.angular.module 'jaggy',[]
-  angularModule.directive 'jaggy',->
+  angularModule.constant 'jaggyConfig',{
+    useCache: 'localStorage'
+    useEmptyImage: yes
+  }
+  angularModule.constant 'jaggyEmptyImage','<svg viewBox="0 0 1 1" shape-rendering="crispEdges" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M0,0h1v1h-1Z" fill="rgba(0,0,0,0.50)"></path></svg>'
+  angularModule.directive 'jaggy',(jaggyConfig,jaggyEmptyImage)->
     (scope,element,attrs)->
       element.css 'display','none'
 
@@ -94,13 +114,16 @@ Jaggy.angularModule= (window)->
         for param in attrs.jaggy.split ';'
           [key,value]= param.split ':'
           options[key]= value
+      options.cache= !! jaggyConfig.useCache
 
-      #fix <img ng-src="" jaggy>
+      #fix <img ng-src="url" jaggy>
       url= attrs.src
       url?= attrs.ngSrc
 
       Jaggy.createSVG url,options,(error,svg)->
-        throw error if error?
+        if error
+          throw error if not jaggyConfig.useEmptyImage
+          return element.replaceWith jaggyEmptyImage
         element.replaceWith svg
 
 Jaggy.convertToSVG= (pixels,args...)->
@@ -120,6 +143,8 @@ Jaggy.convertToSVG= (pixels,args...)->
   if options.outerHTML isnt false
     svg= svg.outerHTML.replace ' viewbox=',' viewBox='# fix to lowerCamel
     svg= svg.replace(/&gt;/g,'>')# enable querySelector
+
+  Jaggy.setCache options.cacheUrl,svg.outerHTML if options.cacheUrl?
 
   callback null,svg
 

@@ -392,7 +392,7 @@ Jaggy.gulpPlugin = function(options) {
 };
 
 Jaggy.createSVG = function() {
-  var args, callback, getPixels, options, url;
+  var args, cache, callback, getPixels, options, url;
   url = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
   if (typeof url !== 'string') {
     throw new Error('url is not string');
@@ -409,6 +409,13 @@ Jaggy.createSVG = function() {
   });
   if (options.outerHTML == null) {
     options.outerHTML = false;
+  }
+  if (options.cache) {
+    options.cacheUrl = url;
+    cache = Jaggy.getCache(url);
+    if ((cache != null) && (options.noCache == null)) {
+      return callback(null, cache);
+    }
   }
   getPixels = require('get-pixels');
   return getPixels(url, function(error, pixels) {
@@ -444,10 +451,30 @@ Jaggy.createSVG = function() {
   });
 };
 
+Jaggy.getCache = function(url) {
+  return localStorage.getItem('jaggy:' + url);
+};
+
+Jaggy.setCache = function(url, cache) {
+  var error;
+  try {
+    return localStorage.setItem('jaggy:' + url, cache);
+  } catch (_error) {
+    error = _error;
+    localStorage.removeItem('jaggy:' + url);
+    return console.error(error);
+  }
+};
+
 Jaggy.angularModule = function(window) {
   var angularModule;
   angularModule = window.angular.module('jaggy', []);
-  return angularModule.directive('jaggy', function() {
+  angularModule.constant('jaggyConfig', {
+    useCache: 'localStorage',
+    useEmptyImage: true
+  });
+  angularModule.constant('jaggyEmptyImage', '<svg viewBox="0 0 1 1" shape-rendering="crispEdges" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M0,0h1v1h-1Z" fill="rgba(0,0,0,0.50)"></path></svg>');
+  return angularModule.directive('jaggy', function(jaggyConfig, jaggyEmptyImage) {
     return function(scope, element, attrs) {
       var i, key, len, options, param, ref, ref1, url, value;
       element.css('display', 'none');
@@ -460,13 +487,17 @@ Jaggy.angularModule = function(window) {
           options[key] = value;
         }
       }
+      options.cache = !!jaggyConfig.useCache;
       url = attrs.src;
       if (url == null) {
         url = attrs.ngSrc;
       }
       return Jaggy.createSVG(url, options, function(error, svg) {
-        if (error != null) {
-          throw error;
+        if (error) {
+          if (!jaggyConfig.useEmptyImage) {
+            throw error;
+          }
+          return element.replaceWith(jaggyEmptyImage);
         }
         return element.replaceWith(svg);
       });
@@ -501,6 +532,9 @@ Jaggy.convertToSVG = function() {
   if (options.outerHTML !== false) {
     svg = svg.outerHTML.replace(' viewbox=', ' viewBox=');
     svg = svg.replace(/&gt;/g, '>');
+  }
+  if (options.cacheUrl != null) {
+    Jaggy.setCache(options.cacheUrl, svg.outerHTML);
   }
   return callback(null, svg);
 };
@@ -27968,11 +28002,13 @@ module.exports={
   "main": "jaggy",
   "bin": "jaggy",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "scripts": {
     "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify > public/jaggy.browser.js",
     "prestart": "onefile --json --output public/pkgs",
     "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",
+    "watch": "abigail ./**/*.coffee:build --ignore --execute",
+    
     "convert": "jaggy public -o hogekosan -g 2",
     "test": "jasminetea test --verbose --cover --report",
     "posttest": "rm public/*.svg",
@@ -27989,6 +28025,7 @@ module.exports={
     "through2": "^0.6.3"
   },
   "devDependencies": {
+    "abigail": "0.0.7",
     "browserify": "^9.0.3",
     "coffeeify": "^1.0.0",
     "gulp": "^3.8.11",
