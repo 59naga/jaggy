@@ -394,9 +394,6 @@ Jaggy.gulpPlugin = function(options) {
 Jaggy.createSVG = function() {
   var args, cache, callback, getPixels, options, url;
   url = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
-  if (typeof url !== 'string') {
-    throw new Error('url is not string');
-  }
   callback = null;
   options = {};
   args.forEach(function(arg) {
@@ -455,8 +452,14 @@ Jaggy.getCache = function(url) {
   return localStorage.getItem('jaggy:' + url);
 };
 
-Jaggy.setCache = function(url, cache) {
-  var error;
+Jaggy.setCache = function(url, element) {
+  var cache, div, error;
+  cache = element.outerHTML;
+  if (cache == null) {
+    div = document.createElement('div');
+    div.appendChild = element;
+    cache = div.innerHTML;
+  }
   try {
     return localStorage.setItem('jaggy:' + url, cache);
   } catch (_error) {
@@ -534,7 +537,7 @@ Jaggy.convertToSVG = function() {
     svg = svg.replace(/&gt;/g, '>');
   }
   if (options.cacheUrl != null) {
-    Jaggy.setCache(options.cacheUrl, svg.outerHTML);
+    Jaggy.setCache(options.cacheUrl, svg);
   }
   return callback(null, svg);
 };
@@ -28002,7 +28005,7 @@ module.exports={
   "main": "jaggy",
   "bin": "jaggy",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "scripts": {
     "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify > public/jaggy.browser.js",
     "prestart": "onefile --json --output public/pkgs",

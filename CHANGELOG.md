@@ -1,4 +1,4 @@
-v0.1.6 / Mar 30 2015
+v0.1.7 / Mar 30 2015
 =========================
 Add Angular options by constant `jaggyConfig`
 
