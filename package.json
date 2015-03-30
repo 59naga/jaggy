@@ -3,13 +3,12 @@
   "main": "jaggy",
   "bin": "jaggy",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "scripts": {
     "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify > public/jaggy.browser.js",
     "prestart": "onefile --json --output public/pkgs",
     "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",
     "watch": "abigail ./**/*.coffee:build --ignore --execute",
-    
     "convert": "jaggy public -o hogekosan -g 2",
     "test": "jasminetea test --verbose --cover --report",
     "posttest": "rm public/*.svg",
@@ -30,7 +29,8 @@
     "browserify": "^9.0.3",
     "coffeeify": "^1.0.0",
     "gulp": "^3.8.11",
-    "jasminetea": "^0.1.27"
+    "jasminetea": "^0.1.27",
+    "onefile": "^0.2.8"
   },
   "keywords": [
     "pixelart",

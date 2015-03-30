@@ -92,7 +92,7 @@ Jaggy.setCache= (url,element)->
   cache= element.outerHTML
   if not cache?
     div= document.createElement 'div'
-    div.appendChild= element
+    div.appendChild element
     cache= div.innerHTML
 
   try

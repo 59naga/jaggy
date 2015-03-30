@@ -457,7 +457,7 @@ Jaggy.setCache = function(url, element) {
   cache = element.outerHTML;
   if (cache == null) {
     div = document.createElement('div');
-    div.appendChild = element;
+    div.appendChild(element);
     cache = div.innerHTML;
   }
   try {
@@ -19072,7 +19072,7 @@ function inherits (c, p, proto) {
 (function (global){
 /**
  * @license
- * Lo-Dash 1.0.1 (Custom Build) <http://lodash.com/>
+ * Lo-Dash 1.0.2 (Custom Build) <http://lodash.com/>
  * Build: `lodash modern -o ./dist/lodash.js`
  * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.4.4 <http://underscorejs.org/>
@@ -20716,7 +20716,7 @@ function inherits (c, p, proto) {
    * _.isPlainObject({ 'name': 'moe', 'age': 40 });
    * // => true
    */
-  var isPlainObject = function(value) {
+  var isPlainObject = !getPrototypeOf ? shimIsPlainObject : function(value) {
     if (!(value && typeof value == 'object')) {
       return false;
     }
@@ -23988,7 +23988,7 @@ function inherits (c, p, proto) {
    * @memberOf _
    * @type String
    */
-  lodash.VERSION = '1.0.1';
+  lodash.VERSION = '1.0.2';
 
   // add "Chaining" functions to the wrapper
   lodash.prototype.toString = wrapperToString;
@@ -28005,13 +28005,12 @@ module.exports={
   "main": "jaggy",
   "bin": "jaggy",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "scripts": {
     "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify > public/jaggy.browser.js",
     "prestart": "onefile --json --output public/pkgs",
     "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",
     "watch": "abigail ./**/*.coffee:build --ignore --execute",
-    
     "convert": "jaggy public -o hogekosan -g 2",
     "test": "jasminetea test --verbose --cover --report",
     "posttest": "rm public/*.svg",
@@ -28032,7 +28031,8 @@ module.exports={
     "browserify": "^9.0.3",
     "coffeeify": "^1.0.0",
     "gulp": "^3.8.11",
-    "jasminetea": "^0.1.27"
+    "jasminetea": "^0.1.27",
+    "onefile": "^0.2.8"
   },
   "keywords": [
     "pixelart",
