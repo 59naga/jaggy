@@ -52,7 +52,6 @@ Jaggy.gulpPlugin= (options={})->
 
 # Use url for browser
 Jaggy.createSVG= (url,args...)->
-  throw new Error 'url is not string' if typeof url isnt 'string'
   callback= null
   options= {}
   args.forEach (arg)-> switch typeof arg
@@ -89,7 +88,13 @@ Jaggy.createSVG= (url,args...)->
 
 Jaggy.getCache= (url)->
   localStorage.getItem 'jaggy:'+url
-Jaggy.setCache= (url,cache)->
+Jaggy.setCache= (url,element)->
+  cache= element.outerHTML
+  if not cache?
+    div= document.createElement 'div'
+    div.appendChild= element
+    cache= div.innerHTML
+
   try
     localStorage.setItem 'jaggy:'+url,cache
   catch error
@@ -144,7 +149,7 @@ Jaggy.convertToSVG= (pixels,args...)->
     svg= svg.outerHTML.replace ' viewbox=',' viewBox='# fix to lowerCamel
     svg= svg.replace(/&gt;/g,'>')# enable querySelector
 
-  Jaggy.setCache options.cacheUrl,svg.outerHTML if options.cacheUrl?
+  Jaggy.setCache options.cacheUrl,svg if options.cacheUrl?
 
   callback null,svg
 

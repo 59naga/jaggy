@@ -1,11 +1,15 @@
-v0.1.5 / Mar 30 2015
+v0.1.6 / Mar 30 2015
 =========================
 Add Angular options by constant `jaggyConfig`
 
- * [`unknown`][2] :bulb: empty image instead of Error by `jaggyConfig.useEmptyImage`
- * [`unknown`][2] :bulb: caching a converted svg by `jaggyConfig.useCache`
+ * [`a907a0a`][2] :bulb: empty image instead of Error by `jaggyConfig.useEmptyImage`
+ * [`a907a0a`][2] :bulb: caching a converted svg by `jaggyConfig.useCache`
 
-[2]: https://github.com/59naga/jaggy/commits/master
+ * [`unknown`][3] :bug: Fix [#1](https://github.com/59naga/jaggy/issues/1)
+ * [`unknown`][3] :bug: Fix [#2](https://github.com/59naga/jaggy/issues/2)
+
+[2]: https://github.com/59naga/jaggy/commit/a907a0a5da621d26fb5c01fceb49a882b6f97a71
+[3]: https://github.com/59naga/jaggy/commits/master
 
 v0.1.4 / Mar 29 2015
 =========================
