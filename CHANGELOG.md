@@ -1,4 +1,4 @@
-v0.1.9 / Mar 30 2015
+v0.1.9 / Apr 7 2015
 =========================
  * [`a907a0a`][5] :lipstick: Add ng-annotate for uglifyjs
 
