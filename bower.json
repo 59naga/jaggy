@@ -1,19 +1,20 @@
 {
   "name": "jaggy",
-  "version": "0.1.8",
+  "main": "public/jaggy.browser.js",
+  "version": "0.1.9",
   "homepage": "https://github.com/59naga/jaggy",
   "authors": [
     "59naga <i59naga@icloud.com>"
   ],
   "description": "<img src=\"pixel-art\"> to <svg>",
-  "main": "public/jaggy.browser.js",
   "keywords": [
     "pixel",
     "pixel-art",
     "get-pixels",
     "gif",
     "svg",
-    "browserify"
+    "browserify",
+    "angularjs"
   ],
   "license": "MIT",
   "ignore": [

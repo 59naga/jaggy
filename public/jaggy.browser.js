@@ -477,7 +477,7 @@ Jaggy.angularModule = function(window) {
     useEmptyImage: true
   });
   angularModule.constant('jaggyEmptyImage', '<svg viewBox="0 0 1 1" shape-rendering="crispEdges" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M0,0h1v1h-1Z" fill="rgba(0,0,0,0.50)"></path></svg>');
-  return angularModule.directive('jaggy', function(jaggyConfig, jaggyEmptyImage) {
+  return angularModule.directive('jaggy', ["jaggyConfig", "jaggyEmptyImage", function(jaggyConfig, jaggyEmptyImage) {
     return function(scope, element, attrs) {
       var i, key, len, options, param, ref, ref1, url, value;
       element.css('display', 'none');
@@ -505,7 +505,7 @@ Jaggy.angularModule = function(window) {
         return element.replaceWith(svg);
       });
     };
-  });
+  }]);
 };
 
 Jaggy.convertToSVG = function() {
@@ -9726,7 +9726,7 @@ function through (write, end, opts) {
   stream.queue = stream.push = function (data) {
 //    console.error(ended)
     if(_ended) return stream
-    if(data == null) _ended = true
+    if(data === null) _ended = true
     buffer.push(data)
     drain()
     return stream
@@ -28005,15 +28005,20 @@ module.exports={
   "main": "jaggy",
   "bin": "jaggy",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.7",
+  "version": "0.1.9",
+
   "scripts": {
-    "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify > public/jaggy.browser.js",
+    "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
+    "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js",
+
     "prestart": "onefile --json --output public/pkgs",
     "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",
     "watch": "abigail ./**/*.coffee:build --ignore --execute",
     "convert": "jaggy public -o hogekosan -g 2",
+
     "test": "jasminetea test --verbose --cover --report",
     "posttest": "rm public/*.svg",
+
     "prepublish": "npm run build"
   },
   "dependencies": {
@@ -28032,8 +28037,11 @@ module.exports={
     "coffeeify": "^1.0.0",
     "gulp": "^3.8.11",
     "jasminetea": "^0.1.27",
-    "onefile": "^0.2.8"
+    "ng-annotate": "^0.15.4",
+    "onefile": "^0.2.8",
+    "uglify-js": "^2.4.19"
   },
+
   "keywords": [
     "pixelart",
     "get-pixels",

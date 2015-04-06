@@ -1,3 +1,9 @@
+v0.1.9 / Mar 30 2015
+=========================
+ * [`a907a0a`][5] :lipstick: Add ng-annotate for uglifyjs
+
+[5]: https://github.com/59naga/jaggy/commits/master
+
 v0.1.8 / Mar 30 2015
 =========================
 Add Angular options by constant `jaggyConfig`
@@ -10,7 +16,7 @@ Add Angular options by constant `jaggyConfig`
 
 [2]: https://github.com/59naga/jaggy/commit/a907a0a5da621d26fb5c01fceb49a882b6f97a71
 [3]: https://github.com/59naga/jaggy/commit/d4cd748d68f2fd27b17af54cc768bc1cbb196d3d
-[4]: https://github.com/59naga/jaggy/commits/master
+[4]: https://github.com/59naga/jaggy/commit/4cb8d40a9ae223a97249f4d07fae390f3435c183
 
 v0.1.4 / Mar 29 2015
 =========================
