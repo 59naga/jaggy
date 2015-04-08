@@ -15,6 +15,8 @@
     "watch": "abigail ./**/*.coffee:build --ignore --execute",
     "convert": "jaggy public -o hogekosan -g 2",
 
+    "update-bower": "git tag v$(jqn bower version) &&  git push --tags",
+
     "test": "jasminetea test --verbose --cover --report",
     "posttest": "rm public/*.svg",
 
@@ -36,6 +38,7 @@
     "coffeeify": "^1.0.0",
     "gulp": "^3.8.11",
     "jasminetea": "^0.1.27",
+    "jqn": "0.0.3",
     "ng-annotate": "^0.15.4",
     "onefile": "^0.2.8",
     "uglify-js": "^2.4.19"
