@@ -452,12 +452,22 @@ Jaggy.getCache = function(url) {
   return localStorage.getItem('jaggy:' + url);
 };
 
-Jaggy.setCache = function(url, element) {
-  var cache, div, error;
-  cache = element.outerHTML;
+Jaggy.setCache = function(url, element, options) {
+  var cache, cacheElement, div, error, script;
+  if (options == null) {
+    options = {};
+  }
+  cacheElement = element.cloneNode(true);
+  if (options.cacheScript === 'base64') {
+    script = cacheElement.querySelector('script');
+    if (script) {
+      script.innerHTML = btoa(script.innerHTML);
+    }
+  }
+  cache = cacheElement.outerHTML;
   if (cache == null) {
     div = document.createElement('div');
-    div.appendChild(element);
+    div.appendChild(cacheElement);
     cache = div.innerHTML;
   }
   try {
@@ -476,6 +486,14 @@ Jaggy.angularModule = function(window) {
     useCache: 'localStorage',
     useEmptyImage: true
   });
+  angularModule.config(["jaggyConfig", function(jaggyConfig) {
+    var key;
+    key = 'jaggy:version';
+    if (localStorage.getItem(key) !== '0.1.11') {
+      localStorage.clear();
+    }
+    return localStorage.setItem(key, '0.1.11');
+  }]);
   angularModule.constant('jaggyEmptyImage', '<svg viewBox="0 0 1 1" shape-rendering="crispEdges" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M0,0h1v1h-1Z" fill="rgba(0,0,0,0.50)"></path></svg>');
   return angularModule.directive('jaggy', ["jaggyConfig", "jaggyEmptyImage", function(jaggyConfig, jaggyEmptyImage) {
     return function(scope, element, attrs) {
@@ -491,6 +509,9 @@ Jaggy.angularModule = function(window) {
         }
       }
       options.cache = !!jaggyConfig.useCache;
+      if (options.cacheScript == null) {
+        options.cacheScript = 'base64';
+      }
       url = attrs.src;
       if (url == null) {
         url = attrs.ngSrc;
@@ -507,9 +528,10 @@ Jaggy.angularModule = function(window) {
         if (svg.match && svg.match('<script>')) {
           svgContainer = document.createElement('div');
           svgContainer.innerHTML = svg;
-          script = (ref2 = svgContainer.querySelector('script')) != null ? ref2.innerHTML : void 0;
-          script = script.replace(/&gt;/g, '>');
-          script = script.replace(/&lt;/g, '<');
+          script = ((ref2 = svgContainer.querySelector('script')) != null ? ref2.innerHTML : void 0) || '';
+          if (options.cacheScript === 'base64') {
+            script = atob(script);
+          }
           return eval(script);
         }
       });
@@ -546,21 +568,9 @@ Jaggy.convertToSVG = function() {
     svg = svg.replace(/&gt;/g, '>');
   }
   if (options.cacheUrl != null) {
-    Jaggy.setCache(options.cacheUrl, svg);
+    Jaggy.setCache(options.cacheUrl, svg, options);
   }
   return callback(null, svg);
-};
-
-Jaggy.enableAnimation = function(svg) {
-  var script;
-  if (svg.parentNode === null) {
-    throw new Error('Can enable appended element only');
-  }
-  script = svg.querySelector('script');
-  if (script) {
-    script.parentNode.replaceChild(script.cloneNode(), script);
-  }
-  return svg;
 };
 
 Jaggy.readImageData = function(file, callback) {
@@ -28028,6 +28038,8 @@ module.exports={
     "watch": "abigail ./**/*.coffee:build --ignore --execute",
     "convert": "jaggy public -o hogekosan -g 2",
 
+    "update-bower": "git tag v$(jqn bower version) &&  git push --tags",
+
     "test": "jasminetea test --verbose --cover --report",
     "posttest": "rm public/*.svg",
 
@@ -28049,6 +28061,7 @@ module.exports={
     "coffeeify": "^1.0.0",
     "gulp": "^3.8.11",
     "jasminetea": "^0.1.27",
+    "jqn": "0.0.3",
     "ng-annotate": "^0.15.4",
     "onefile": "^0.2.8",
     "uglify-js": "^2.4.19"

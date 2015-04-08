@@ -88,11 +88,16 @@ Jaggy.createSVG= (url,args...)->
 
 Jaggy.getCache= (url)->
   localStorage.getItem 'jaggy:'+url
-Jaggy.setCache= (url,element)->
-  cache= element.outerHTML
+Jaggy.setCache= (url,element,options={})->
+  cacheElement= element.cloneNode true
+  if options.cacheScript is 'base64'
+    script= cacheElement.querySelector 'script'
+    script.innerHTML= btoa script.innerHTML if script
+
+  cache= cacheElement.outerHTML
   if not cache?
     div= document.createElement 'div'
-    div.appendChild element
+    div.appendChild cacheElement
     cache= div.innerHTML
 
   try
@@ -109,6 +114,11 @@ Jaggy.angularModule= (window)->
     useCache: 'localStorage'
     useEmptyImage: yes
   }
+  angularModule.config (jaggyConfig)->
+    key= 'jaggy:version'
+    localStorage.clear() if localStorage.getItem(key) isnt '0.1.11'
+    localStorage.setItem key,'0.1.11'
+
   angularModule.constant 'jaggyEmptyImage','<svg viewBox="0 0 1 1" shape-rendering="crispEdges" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M0,0h1v1h-1Z" fill="rgba(0,0,0,0.50)"></path></svg>'
   angularModule.directive 'jaggy',(jaggyConfig,jaggyEmptyImage)->
     (scope,element,attrs)->
@@ -120,6 +130,7 @@ Jaggy.angularModule= (window)->
           [key,value]= param.split ':'
           options[key]= value
       options.cache= !! jaggyConfig.useCache
+      options.cacheScript?= 'base64'
 
       # fix <img ng-src="url" jaggy>
       url= attrs.src
@@ -135,9 +146,8 @@ Jaggy.angularModule= (window)->
         if svg.match and svg.match '<script>'
           svgContainer= document.createElement 'div'
           svgContainer.innerHTML= svg
-          script= svgContainer.querySelector('script')?.innerHTML
-          script= script.replace /&gt;/g,'>'
-          script= script.replace /&lt;/g,'<'
+          script= svgContainer.querySelector('script')?.innerHTML or ''
+          script= atob script if options.cacheScript is 'base64'
           eval script
 
 Jaggy.convertToSVG= (pixels,args...)->
@@ -158,17 +168,9 @@ Jaggy.convertToSVG= (pixels,args...)->
     svg= svg.outerHTML.replace ' viewbox=',' viewBox='# fix to lowerCamel
     svg= svg.replace(/&gt;/g,'>')# enable querySelector
 
-  Jaggy.setCache options.cacheUrl,svg if options.cacheUrl?
+  Jaggy.setCache options.cacheUrl,svg,options if options.cacheUrl?
 
   callback null,svg
-
-Jaggy.enableAnimation= (svg)->
-  throw new Error('Can enable appended element only') if svg.parentNode is null
-
-  # fix disabled script
-  script= svg.querySelector 'script'
-  script.parentNode.replaceChild script.cloneNode(),script if script
-  svg
 
 # Use Buffer for node.js
 Jaggy.readImageData= (file,callback)->
