@@ -3,11 +3,12 @@
   "main": "jaggy",
   "bin": "jaggy",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.9",
+  "version": "0.1.10",
 
   "scripts": {
     "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
     "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js",
+    "devbuild": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
 
     "prestart": "onefile --json --output public/pkgs",
     "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",

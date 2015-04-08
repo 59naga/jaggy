@@ -318,11 +318,11 @@ var Jaggy,
   slice = [].slice;
 
 Jaggy = function() {
-  if (typeof window !== 'undefined') {
-    Jaggy.createSVG.apply(null, arguments);
+  if (typeof window !== "undefined" && window !== null) {
+    Jaggy.createSVG.apply(Jaggy, arguments);
   }
-  if (typeof window === 'undefined') {
-    return Jaggy.gulpPlugin.apply(null, arguments);
+  if (typeof window === "undefined" || window === null) {
+    return Jaggy.gulpPlugin.apply(Jaggy, arguments);
   }
 };
 
@@ -465,7 +465,7 @@ Jaggy.setCache = function(url, element) {
   } catch (_error) {
     error = _error;
     localStorage.removeItem('jaggy:' + url);
-    return console.error(error);
+    return console.error('jaggy:' + url, error);
   }
 };
 
@@ -496,13 +496,22 @@ Jaggy.angularModule = function(window) {
         url = attrs.ngSrc;
       }
       return Jaggy.createSVG(url, options, function(error, svg) {
+        var ref2, script, svgContainer;
         if (error) {
           if (!jaggyConfig.useEmptyImage) {
             throw error;
           }
           return element.replaceWith(jaggyEmptyImage);
         }
-        return element.replaceWith(svg);
+        element.replaceWith(svg);
+        if (svg.match && svg.match('<script>')) {
+          svgContainer = document.createElement('div');
+          svgContainer.innerHTML = svg;
+          script = (ref2 = svgContainer.querySelector('script')) != null ? ref2.innerHTML : void 0;
+          script = script.replace(/&gt;/g, '>');
+          script = script.replace(/&lt;/g, '<');
+          return eval(script);
+        }
       });
     };
   }]);
@@ -548,7 +557,9 @@ Jaggy.enableAnimation = function(svg) {
     throw new Error('Can enable appended element only');
   }
   script = svg.querySelector('script');
-  script.parentNode.replaceChild(script.cloneNode(), script);
+  if (script) {
+    script.parentNode.replaceChild(script.cloneNode(), script);
+  }
   return svg;
 };
 
@@ -28005,11 +28016,12 @@ module.exports={
   "main": "jaggy",
   "bin": "jaggy",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.9",
+  "version": "0.1.10",
 
   "scripts": {
     "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
     "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js",
+    "devbuild": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
 
     "prestart": "onefile --json --output public/pkgs",
     "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",

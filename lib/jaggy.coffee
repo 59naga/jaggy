@@ -1,6 +1,6 @@
 Jaggy= ->
-  Jaggy.createSVG.apply null,arguments if typeof window isnt 'undefined'
-  Jaggy.gulpPlugin.apply null,arguments if typeof window is 'undefined'
+  Jaggy.createSVG arguments... if window?
+  Jaggy.gulpPlugin arguments... if not window?
 
 Jaggy.cli= ->
   cli= new (require 'commander').Command
@@ -100,7 +100,7 @@ Jaggy.setCache= (url,element)->
   catch error
     localStorage.removeItem 'jaggy:'+url
     
-    console.error error
+    console.error 'jaggy:'+url,error
 
 # Use for angular.js
 Jaggy.angularModule= (window)->
@@ -121,7 +121,7 @@ Jaggy.angularModule= (window)->
           options[key]= value
       options.cache= !! jaggyConfig.useCache
 
-      #fix <img ng-src="url" jaggy>
+      # fix <img ng-src="url" jaggy>
       url= attrs.src
       url?= attrs.ngSrc
 
@@ -130,6 +130,15 @@ Jaggy.angularModule= (window)->
           throw error if not jaggyConfig.useEmptyImage
           return element.replaceWith jaggyEmptyImage
         element.replaceWith svg
+
+        # fix animatedGif caching
+        if svg.match and svg.match '<script>'
+          svgContainer= document.createElement 'div'
+          svgContainer.innerHTML= svg
+          script= svgContainer.querySelector('script')?.innerHTML
+          script= script.replace /&gt;/g,'>'
+          script= script.replace /&lt;/g,'<'
+          eval script
 
 Jaggy.convertToSVG= (pixels,args...)->
   callback= null
@@ -158,7 +167,7 @@ Jaggy.enableAnimation= (svg)->
 
   # fix disabled script
   script= svg.querySelector 'script'
-  script.parentNode.replaceChild script.cloneNode(),script
+  script.parentNode.replaceChild script.cloneNode(),script if script
   svg
 
 # Use Buffer for node.js

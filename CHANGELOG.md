@@ -1,8 +1,15 @@
+v0.1.10 / Apr 8 2015
+=========================
+ * [`unknown`][6] :bug: Hotfix [#3][6A]
+
+[6A]: https://github.com/59naga/jaggy/issues/3
+[6]: https://github.com/59naga/jaggy/commit/
+
 v0.1.9 / Apr 7 2015
 =========================
- * [`a907a0a`][5] :lipstick: Add ng-annotate for uglifyjs
+ * [`d36c425`][5] :lipstick: Add ng-annotate for uglifyjs
 
-[5]: https://github.com/59naga/jaggy/commits/master
+[5]: https://github.com/59naga/jaggy/commit/d36c425846abff547f719c43dc2ecf67097079e8
 
 v0.1.8 / Mar 30 2015
 =========================
