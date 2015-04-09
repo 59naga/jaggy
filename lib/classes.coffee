@@ -88,7 +88,9 @@ class Frames
     createDisplay=(frame_id)->
       display= document.createElementNS 'http://www.w3.org/2000/svg','use'
       display.setAttributeNS 'http://www.w3.org/1999/xlink','href','#'+frame_id if frame_id
-      document.querySelector('#'+id).insertBefore display,document.querySelector '#'+id+'>g'
+
+      anime= document.querySelector '#'+id
+      anime.insertBefore display,document.querySelector '#'+id+'>g' if anime?
 
   uuid= ->
     # via http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript

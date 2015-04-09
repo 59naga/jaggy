@@ -135,6 +135,9 @@ Jaggy.angularModule= (window)->
       # fix <img ng-src="url" jaggy>
       url= attrs.src
       url?= attrs.ngSrc
+      if not url? or url.length is 0
+        element.replaceWith jaggyEmptyImage if jaggyConfig.useEmptyImage 
+        return
 
       Jaggy.createSVG url,options,(error,svg)->
         if error

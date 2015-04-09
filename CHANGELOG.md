@@ -1,9 +1,15 @@
+v0.1.12 / Apr 9 2015
+=========================
+ * [`unknown`][7] :bug: fix `Cannot read property 'indexOf' of undefined` by angular-jaggy
+
+[7]: https://github.com/59naga/jaggy/commit/
+
 v0.1.11 / Apr 8 2015
 =========================
- * [`unknown`][6] :bug: Hotfix [#3][6A]
+ * [`0265a98`][6] :bug: Hotfix [#3][6A]
 
 [6A]: https://github.com/59naga/jaggy/issues/3
-[6]: https://github.com/59naga/jaggy/commit/
+[6]: https://github.com/59naga/jaggy/commit/0265a98fd8f6d5270b7eaef60c559511335aeb38
 
 v0.1.9 / Apr 7 2015
 =========================

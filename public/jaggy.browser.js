@@ -129,11 +129,15 @@ Frames = (function() {
       return setTimeout(nextFrame, frame.getAttribute('delay'));
     };
     return createDisplay = function(frame_id) {
+      var anime;
       display = document.createElementNS('http://www.w3.org/2000/svg', 'use');
       if (frame_id) {
         display.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + frame_id);
       }
-      return document.querySelector('#' + id).insertBefore(display, document.querySelector('#' + id + '>g'));
+      anime = document.querySelector('#' + id);
+      if (anime != null) {
+        return anime.insertBefore(display, document.querySelector('#' + id + '>g'));
+      }
     };
   };
 
@@ -515,6 +519,12 @@ Jaggy.angularModule = function(window) {
       url = attrs.src;
       if (url == null) {
         url = attrs.ngSrc;
+      }
+      if ((url == null) || url.length === 0) {
+        if (jaggyConfig.useEmptyImage) {
+          element.replaceWith(jaggyEmptyImage);
+        }
+        return;
       }
       return Jaggy.createSVG(url, options, function(error, svg) {
         var ref2, script, svgContainer;
