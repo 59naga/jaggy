@@ -4,8 +4,6 @@ Jaggy= require '../'
 gulp= require 'gulp'
 fs= require 'fs'
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL= 10000
-
 describe 'Jaggy',->
   describe 'Usage for gulp',->
     it 'Convert to <svg> by .gif',(done)->

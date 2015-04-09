@@ -7,7 +7,7 @@
 
   "scripts": {
     "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
-    "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js",
+    "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js --prefix 1",
     "devbuild": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
 
     "prestart": "onefile --json --output public/pkgs",
@@ -17,7 +17,7 @@
 
     "update-bower": "git tag v$(jqn bower version) &&  git push --tags",
 
-    "test": "jasminetea test --verbose --cover --report",
+    "test": "jasminetea test --verbose --cover --report --timeout 20000",
     "posttest": "rm public/*.svg",
 
     "prepublish": "npm run build"

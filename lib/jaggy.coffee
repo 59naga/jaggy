@@ -110,17 +110,22 @@ Jaggy.setCache= (url,element,options={})->
 # Use for angular.js
 Jaggy.angularModule= (window)->
   angularModule= window.angular.module 'jaggy',[]
+  angularModule.constant 'jaggyEmptyImage','<svg viewBox="0 0 1 1" shape-rendering="crispEdges" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M0,0h1v1h-1Z" fill="rgba(0,0,0,0.50)"></path></svg>'
   angularModule.constant 'jaggyConfig',{
     useCache: 'localStorage'
     useEmptyImage: yes
+    glitch: 4
   }
   angularModule.config (jaggyConfig)->
     key= 'jaggy:version'
-    localStorage.clear() if localStorage.getItem(key) isnt '0.1.11'
-    localStorage.setItem key,'0.1.11'
+    value= '0.1.12'
+    localStorage.clear() if localStorage.getItem(key) isnt value
+    localStorage.setItem key,value
 
-  angularModule.constant 'jaggyEmptyImage','<svg viewBox="0 0 1 1" shape-rendering="crispEdges" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M0,0h1v1h-1Z" fill="rgba(0,0,0,0.50)"></path></svg>'
-  angularModule.directive 'jaggy',(jaggyConfig,jaggyEmptyImage)->
+  angularModule.directive 'jaggy',(
+    jaggyConfig
+    jaggyEmptyImage
+  )->
     (scope,element,attrs)->
       element.css 'display','none'
 
@@ -139,19 +144,30 @@ Jaggy.angularModule= (window)->
         element.replaceWith jaggyEmptyImage if jaggyConfig.useEmptyImage 
         return
 
-      Jaggy.createSVG url,options,(error,svg)->
-        if error
-          throw error if not jaggyConfig.useEmptyImage
-          return element.replaceWith jaggyEmptyImage
-        element.replaceWith svg
+      scope.config= jaggyConfig
+      scope.$watch 'config',(next,prev)->
+        if next.glitch>0
+          options.glitch= next.glitch
+          options.cache= no if next.glitch isnt prev.glitch
+          jaggy()
+      ,yes
 
-        # fix animatedGif caching
-        if svg.match and svg.match '<script>'
-          svgContainer= document.createElement 'div'
-          svgContainer.innerHTML= svg
-          script= svgContainer.querySelector('script')?.innerHTML or ''
-          script= atob script if options.cacheScript is 'base64'
-          eval script
+      jaggy= ->
+        Jaggy.createSVG url,options,(error,svg)->
+          svgElement= angular.element svg if svg?
+          if error
+            throw error if not jaggyConfig.useEmptyImage
+            svgElement= angular.element jaggyEmptyImage
+          element.replaceWith svgElement
+          element= svgElement
+
+          # fix animatedGif caching
+          if svg?.match and svg.match '<script>'
+            svgContainer= document.createElement 'div'
+            svgContainer.innerHTML= svg
+            script= svgContainer.querySelector('script')?.innerHTML or ''
+            script= atob script if options.cacheScript is 'base64'
+            eval script
 
 Jaggy.convertToSVG= (pixels,args...)->
   callback= null

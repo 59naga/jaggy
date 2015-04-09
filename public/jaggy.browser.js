@@ -486,22 +486,24 @@ Jaggy.setCache = function(url, element, options) {
 Jaggy.angularModule = function(window) {
   var angularModule;
   angularModule = window.angular.module('jaggy', []);
+  angularModule.constant('jaggyEmptyImage', '<svg viewBox="0 0 1 1" shape-rendering="crispEdges" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M0,0h1v1h-1Z" fill="rgba(0,0,0,0.50)"></path></svg>');
   angularModule.constant('jaggyConfig', {
     useCache: 'localStorage',
-    useEmptyImage: true
+    useEmptyImage: true,
+    glitch: 4
   });
   angularModule.config(["jaggyConfig", function(jaggyConfig) {
-    var key;
+    var key, value;
     key = 'jaggy:version';
-    if (localStorage.getItem(key) !== '0.1.11') {
+    value = '0.1.12';
+    if (localStorage.getItem(key) !== value) {
       localStorage.clear();
     }
-    return localStorage.setItem(key, '0.1.11');
+    return localStorage.setItem(key, value);
   }]);
-  angularModule.constant('jaggyEmptyImage', '<svg viewBox="0 0 1 1" shape-rendering="crispEdges" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M0,0h1v1h-1Z" fill="rgba(0,0,0,0.50)"></path></svg>');
   return angularModule.directive('jaggy', ["jaggyConfig", "jaggyEmptyImage", function(jaggyConfig, jaggyEmptyImage) {
     return function(scope, element, attrs) {
-      var i, key, len, options, param, ref, ref1, url, value;
+      var i, jaggy, key, len, options, param, ref, ref1, url, value;
       element.css('display', 'none');
       options = {};
       if (attrs.jaggy) {
@@ -526,25 +528,41 @@ Jaggy.angularModule = function(window) {
         }
         return;
       }
-      return Jaggy.createSVG(url, options, function(error, svg) {
-        var ref2, script, svgContainer;
-        if (error) {
-          if (!jaggyConfig.useEmptyImage) {
-            throw error;
+      scope.config = jaggyConfig;
+      scope.$watch('config', function(next, prev) {
+        if (next.glitch > 0) {
+          options.glitch = next.glitch;
+          if (next.glitch !== prev.glitch) {
+            options.cache = false;
           }
-          return element.replaceWith(jaggyEmptyImage);
+          return jaggy();
         }
-        element.replaceWith(svg);
-        if (svg.match && svg.match('<script>')) {
-          svgContainer = document.createElement('div');
-          svgContainer.innerHTML = svg;
-          script = ((ref2 = svgContainer.querySelector('script')) != null ? ref2.innerHTML : void 0) || '';
-          if (options.cacheScript === 'base64') {
-            script = atob(script);
+      }, true);
+      return jaggy = function() {
+        return Jaggy.createSVG(url, options, function(error, svg) {
+          var ref2, script, svgContainer, svgElement;
+          if (svg != null) {
+            svgElement = angular.element(svg);
           }
-          return eval(script);
-        }
-      });
+          if (error) {
+            if (!jaggyConfig.useEmptyImage) {
+              throw error;
+            }
+            svgElement = angular.element(jaggyEmptyImage);
+          }
+          element.replaceWith(svgElement);
+          element = svgElement;
+          if ((svg != null ? svg.match : void 0) && svg.match('<script>')) {
+            svgContainer = document.createElement('div');
+            svgContainer.innerHTML = svg;
+            script = ((ref2 = svgContainer.querySelector('script')) != null ? ref2.innerHTML : void 0) || '';
+            if (options.cacheScript === 'base64') {
+              script = atob(script);
+            }
+            return eval(script);
+          }
+        });
+      };
     };
   }]);
 };
@@ -28040,7 +28058,7 @@ module.exports={
 
   "scripts": {
     "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
-    "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js",
+    "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js --prefix 1",
     "devbuild": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
 
     "prestart": "onefile --json --output public/pkgs",

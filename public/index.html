@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Document</title>
   <script src="pkgs.js"></script>
-  <script src="jaggy.browser.js"></script>
+  <script src="jaggy.browser.min.js"></script>
   <script title="for browser">
     jaggy('moon.png',function(error,svg){
       document.querySelector('section').appendChild(svg);
@@ -16,6 +16,13 @@
   </script>
   <script title="for angular.js">
     var app=angular.module('myApp',['jaggy']);
+    app.constant('jaggyConfig',{glitch:4,useEmptyImage:true});
+    app.run(function($rootScope,jaggyConfig){
+      $rootScope.toggle= function(){
+        var glitch= jaggyConfig.glitch;
+        jaggyConfig.glitch= glitch===4 ? 1+~~(2*Math.random()): 4;
+      };
+    });
     // app.constant('jaggyConfig',{useCache:false,useEmptyImage:false})
   </script>
   <style>
@@ -29,9 +36,11 @@
     <img src="chrono_trigger.svg" alt="via gulp">
 
     <h2>via angular.js</h2>
+    <p><a href="#" ng-click="toggle()">toggle glitch</a></p>
     <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy alt="for Angular.js">
     <img ng-src="uma.gif" jaggy alt="for Angular.js">
     <img ng-src="yuno.png" jaggy alt="for Angular.js">
+    <img ng-src="moon.png" jaggy alt="for Angular.js">
     <img ng-src="comeon! emptyimage" jaggy alt="for Angular.js">
 
     <h2>via jaggy API(<code>window.jaggy</code>)</h2>
@@ -39,8 +48,5 @@
       <!-- window.jaggy here... -->
     </figure>
   </section>
-  <h2>and Glitch</h2>
-  <img src="yuno.svg" alt="via gulp">
-  <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy="glitch:2" alt="for Angular.js">
 </body>
 </html>
