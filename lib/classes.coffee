@@ -1,15 +1,10 @@
-if typeof window isnt 'undefined'
-  createElement= document.createElement.bind document
-  createElementNS= document.createElementNS.bind document,'http://www.w3.org/2000/svg'
-  createTextNode= document.createTextNode.bind document
-else
-  domlite= require('dom-lite').document
-  createElement= domlite.createElement.bind domlite
-  createElementNS= (name)->
-    element= createElement name
+document= window?.document
+if not window?
+  document= require('dom-lite').document
+  document.createElementNS= (ns,name)->
+    element= document.createElement name
     element.setAttributeNS?= (ns,key,value)-> this.setAttribute key,value
     element
-  createTextNode= domlite.createTextNode.bind domlite
 
 class Frames
   constructor:(image,options={})->
@@ -38,7 +33,7 @@ class Frames
       i++
 
   toSVG:->
-    svg= createElementNS 'svg'
+    svg= document.createElementNS 'http://www.w3.org/2000/svg','svg'
     for key,value of @attrs
       svg.setAttribute key,value if key.indexOf('xmlns') is 0
       svg.setAttributeNS null,key,value if key.indexOf('xmlns') isnt 0
@@ -51,21 +46,21 @@ class Frames
     svg
 
   createAnime:->
-    g= createElementNS 'g'
+    g= document.createElementNS 'http://www.w3.org/2000/svg','g'
     g.setAttribute 'style','display:none'
     g.appendChild frame.toG() for frame in @frames
     g
 
   createScript:(id)->
-    script= createElement 'script'
-    script.appendChild createTextNode "(#{animation.toString()})('#{id}');"
+    script= document.createElement 'script'
+    script.appendChild document.createTextNode "(#{animation.toString()})('#{id}');"
     script
 
   # private
 
   animation= (id)->
     i= 0
-    frames= [].slice.call document.querySelectorAll '#'+id+'>g>g'
+    frames= [].slice.call window.document.querySelectorAll '#'+id+'>g>g'
     display= null
 
     setTimeout -> nextFrame()
@@ -78,7 +73,7 @@ class Frames
         frame.setAttribute 'id',frame_id
 
       if i is 0
-        uses= document.querySelectorAll '#'+id+'>use'
+        uses= window.document.querySelectorAll '#'+id+'>use'
         use.parentNode.removeChild use for use in uses
 
       i++
@@ -86,11 +81,11 @@ class Frames
       setTimeout nextFrame,frame.getAttribute 'delay'
 
     createDisplay=(frame_id)->
-      display= document.createElementNS 'http://www.w3.org/2000/svg','use'
+      display= window.document.createElementNS 'http://www.w3.org/2000/svg','use'
       display.setAttributeNS 'http://www.w3.org/1999/xlink','href','#'+frame_id if frame_id
 
-      anime= document.querySelector '#'+id
-      anime.insertBefore display,document.querySelector '#'+id+'>g' if anime?
+      anime= window.document.querySelector '#'+id
+      anime.insertBefore display,window.document.querySelector '#'+id+'>g' if anime?
 
   uuid= ->
     # via http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
@@ -126,7 +121,7 @@ class Frame# has many Color
       i= if typeof increment is 'function' then increment(i) else i+increment
 
   toG:->
-    g= createElementNS 'g'
+    g= document.createElementNS 'http://www.w3.org/2000/svg','g'
     for key,value of this
       g.setAttribute key,value if typeof value is 'number'
       g.appendChild value.toPath key if value instanceof Color
@@ -137,7 +132,7 @@ class Color# has many Rect in @points
   put:(point)-> @points.push point
 
   toPath:(fill='black')->
-    path= createElementNS 'path'
+    path= document.createElementNS 'http://www.w3.org/2000/svg','path'
     path.setAttributeNS null,'fill',fill if fill.length
     path.setAttributeNS null, 'd',@getRects().map((rect)->rect.toD()).join '' if @points.length
     path

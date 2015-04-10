@@ -6,9 +6,9 @@
   "version": "0.1.10",
 
   "scripts": {
-    "build": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
+    "build": "browserify lib/jaggy.browser.coffee -t coffeeify --extension .coffee | ng-annotate - --add > public/jaggy.browser.js",
     "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js --prefix 1",
-    "devbuild": "browserify lib/jaggy.coffee -r get-pixels -r gify-parse -t coffeeify | ng-annotate - --add > public/jaggy.browser.js",
+    "devbuild": "browserify lib/jaggy.browser.coffee -t coffeeify --extension .coffee | ng-annotate - --add > public/jaggy.browser.js",
 
     "prestart": "onefile --json --output public/pkgs",
     "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",
@@ -28,6 +28,7 @@
     "dom-lite": "^0.4.0",
     "get-pixels": "^3.1.0",
     "gify-parse": "^1.0.4",
+    "gulp": "*",
     "gulp-util": "^3.0.3",
     "mime": "^1.2.11",
     "through2": "^0.6.3"
@@ -36,7 +37,6 @@
     "abigail": "0.0.7",
     "browserify": "^9.0.3",
     "coffeeify": "^1.0.0",
-    "gulp": "^3.8.11",
     "jasminetea": "^0.1.27",
     "jqn": "0.0.3",
     "ng-annotate": "^0.15.4",

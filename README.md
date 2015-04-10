@@ -97,6 +97,18 @@ Caching a converted svg by localStorage.
 ### .useEmptyImage
 Replace empty image instead of Error. e.g. `<svg><path fill="rgba(0,0,0,0.50)"/>`
 
+### .pixelLimit
+Skip the replacement if over set value.
+
+```
+<!-- skip a below -->
+<img src="very_long_animation.gif" jaggy="pixelLimit:1000000">
+
+<!-- unlimited -->
+<img src="very_long_animation.gif" jaggy="pixelLimit:0">
+```
+Default: 262145 (width 256 * height 256 * channel 4 * frame 1 + 1)
+
 ## Known issue
 * Animated gif Can be convert, But, It's so very very heavy.
 * Uncaught QuotaExceededError: Failed to execute 'setItem' on 'Storage': Setting the value of `jaggy:url` exceeded the quota. due to Huge Animationed gif

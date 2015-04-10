@@ -1,14 +1,23 @@
+# quick boot options
+sudo: false
+cache:
+  directories:
+    - node_modules
+
+# language options
 language: node_js
 node_js:
 - '0.10'
 script:
 - npm test
 
+# coveralls.io options
 env:
   global:
   - secure: Ntsmce9vaWJWoAD6aFE9PbufcENR+bM49LvLjjSM+kZ8f92DVngBEwKA9tPh37KNCr935h4MxSJqe+OHQ50ObuJ5wiMJRsXc+4lvC4MLOo2ntIZd2qdol2SR+89LTT9YAiCX3JGnc/Us1KaUBh/hJ9A/OyxUF8rJLy6dDGldnW4=
   - secure: TsnPeT+sp3VGyHnnEJtsgjX20plmyR0CZv+dqzWlo5839FjA6BlSn6tHvL9O4agifjTarwcj3fRlkHjlvKSGqWiDttmCk2+83ilfHpDLncJ8086k1cQhkGu0nox3cuTHcfNJ0YRJeC/n/fFelL92KV/PSSHjQ/Q5DuzeG5+7a8Y=
 
+# deploy options
 deploy:
   provider: npm
   email: i59naga@icloud.com

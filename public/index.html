@@ -16,7 +16,6 @@
   </script>
   <script title="for angular.js">
     var app=angular.module('myApp',['jaggy']);
-    app.constant('jaggyConfig',{glitch:4,useEmptyImage:true});
     app.run(function($rootScope,jaggyConfig){
       $rootScope.toggle= function(){
         var glitch= jaggyConfig.glitch;
@@ -38,6 +37,7 @@
     <h2>via angular.js</h2>
     <p><a href="#" ng-click="toggle()">toggle glitch</a></p>
     <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy alt="for Angular.js">
+    <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy="pixelLimit:0" alt="">
     <img ng-src="uma.gif" jaggy alt="for Angular.js">
     <img ng-src="yuno.png" jaggy alt="for Angular.js">
     <img ng-src="moon.png" jaggy alt="for Angular.js">

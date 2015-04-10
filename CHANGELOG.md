@@ -1,10 +1,16 @@
+v0.1.14 / Apr 10 2015
+=========================
+ * [`unknown`][9] :blub: Add jaggy.pixelLimit for angular.js
+
+[9]: https://github.com/59naga/jaggy/commit/
+
 v0.1.13 / Apr 10 2015
 =========================
- * [`unknown`][7] :bug: fix `Cannot read property 'indexOf' of undefined` by angular-jaggy
- * [`unknown`][8] :bulb: Add `jaggyConfig.glitch`
+ * [`8ea1129`][7] :bug: fix `Cannot read property 'indexOf' of undefined` by angular-jaggy
+ * [`65b72fb`][8] :bulb: Add `jaggyConfig.glitch`
 
 [7]: https://github.com/59naga/jaggy/commit/8ea1129a91043d569ef63ad3c1d46cd0eb07a8b0
-[8]: https://github.com/59naga/jaggy/commit/
+[8]: https://github.com/59naga/jaggy/commit/65b72fbd4b8f16823bf6bddf46ee5c2b1b4b853b
 
 v0.1.11 / Apr 8 2015
 =========================
