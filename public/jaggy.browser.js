@@ -322,7 +322,7 @@ service.constant('jaggy', window.jaggy.options);
 service.config(["jaggy", function(jaggy) {
   var key, value;
   key = 'jaggy:version';
-  value = '0.1.14';
+  value = '0.1.15';
   if (localStorage.getItem(key) !== value) {
     localStorage.clear();
   }
@@ -409,8 +409,8 @@ getPixels = require('get-pixels');
 gifyParse = require('gify-parse');
 
 Jaggy.createSVG = function() {
-  var args, cache, cacheUrl, callback, i, img, options, url;
-  img = arguments[0], args = 3 <= arguments.length ? slice.call(arguments, 1, i = arguments.length - 1) : (i = 1, []), callback = arguments[i++];
+  var args, cache, cacheUrl, callback, img, j, options, url;
+  img = arguments[0], args = 3 <= arguments.length ? slice.call(arguments, 1, j = arguments.length - 1) : (j = 1, []), callback = arguments[j++];
   if (img.getAttribute != null) {
     url = img.getAttribute('src');
   }
@@ -471,10 +471,10 @@ Jaggy.createSVG = function() {
 };
 
 Jaggy.flush = function() {
-  var i, key, len, ref;
+  var j, key, len, ref;
   ref = Object.keys(localStorage);
-  for (i = 0, len = ref.length; i < len; i++) {
-    key = ref[i];
+  for (j = 0, len = ref.length; j < len; j++) {
+    key = ref[j];
     if (key.indexOf('jaggy' === 0)) {
       localStorage.removeItem(key);
     }
@@ -493,7 +493,7 @@ Jaggy.getCache = function(url, options) {
     script = div.querySelector('script');
     if (script) {
       enableScript = document.createElement('script');
-      enableScript.innerHTML = atob(script.innerHTML);
+      enableScript.innerHTML = atob(div.innerHTML.match('<script>(.*?)</script>')[1]);
       script.parentNode.replaceChild(enableScript, script);
     }
   }
@@ -524,12 +524,18 @@ Jaggy.setCache = function(url, element, options) {
 };
 
 Jaggy.replaceByClass = function() {
-  var i, img, imgs, len, results;
+  var fn, i, img, imgs, j, len, queues;
   imgs = document.querySelectorAll('.jaggy');
-  results = [];
-  for (i = 0, len = imgs.length; i < len; i++) {
-    img = imgs[i];
-    results.push((function(img) {
+  queues = [];
+  fn = function(img, i) {
+    var next;
+    next = function() {
+      if (queues[i + 1] != null) {
+        queues[i + 1]();
+      }
+      return delete queues[i + 1];
+    };
+    return queues.push(function() {
       return Jaggy.createSVG(img, Jaggy.options, function(error, svg) {
         if (error === true) {
           return;
@@ -540,11 +546,18 @@ Jaggy.replaceByClass = function() {
         if ((error != null) && Jaggy.options.emptySVG) {
           svg = Jaggy.emptySVG();
         }
-        return img.parentNode.replaceChild(svg, img);
+        img.parentNode.replaceChild(svg, img);
+        return next();
       });
-    })(img));
+    });
+  };
+  for (i = j = 0, len = imgs.length; j < len; i = ++j) {
+    img = imgs[i];
+    fn(img, i);
   }
-  return results;
+  if (queues[0] != null) {
+    return queues[0]();
+  }
 };
 
 Jaggy.regenerateUUID = function(svg) {

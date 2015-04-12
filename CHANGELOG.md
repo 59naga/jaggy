@@ -1,15 +1,17 @@
-v0.1.14 / Apr 10 2015
+v0.1.15 / Apr 12 2015
 =========================
- * [`unknown`][9] :bulb: Add jaggy.pixelLimit for angular.js
- * [`unknown`][10] :fire: Deprecated `window.jaggy`. Move to `window.jaggy.createSVG`
- * [`unknown`][10] :lipstick: Rename for angular.js
+ * [`20c58d2`][9] :bulb: Add jaggy.pixelLimit for angular.js
+ * [`bbc4132`][10] :fire: Deprecated `window.jaggy`. Move to `window.jaggy.createSVG`
+ * [`bbc4132`][10] :lipstick: Rename for angular.js
      * jaggyConfig to `jaggy`
      * jaggyConfig.useCache to `jaggy.cache`
      * jaggyConfig.useEmptyImage to `jaggy.emptyImage`
- * [`unknown`][10] :bug: Fix duplicate uuid for animation
+ * [`bbc4132`][10] :bug: Fix duplicate uuid for animation
+ * [`unknown`][11] :bug: Fix InvalidCharacterError: DOM Exception 5 on safari
 
 [9]: https://github.com/59naga/jaggy/commit/20c58d2ea152ce4481a634f35562ea7e2334e9fe
-[10]: https://github.com/59naga/jaggy/commit/
+[10]: https://github.com/59naga/jaggy/commit/bbc413299f362e5e26d270b04237ddda61c21927
+[11]: https://github.com/59naga/jaggy/commit/
 
 v0.1.13 / Apr 10 2015
 =========================

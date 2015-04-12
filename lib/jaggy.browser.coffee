@@ -62,7 +62,7 @@ Jaggy.getCache= (url,options={})->
     script= div.querySelector 'script'
     if script
       enableScript= document.createElement 'script'
-      enableScript.innerHTML= atob script.innerHTML
+      enableScript.innerHTML= atob div.innerHTML.match('<script>(.*?)</script>')[1]
       script.parentNode.replaceChild enableScript,script
 
   div.querySelector 'svg'
@@ -87,15 +87,23 @@ Jaggy.setCache= (url,element,options={})->
 Jaggy.replaceByClass= ->
   imgs= document.querySelectorAll '.jaggy'
 
-  for img in imgs
-    do (img)->
-      Jaggy.createSVG img,Jaggy.options,(error,svg)->
-        return if error is yes # pixelLimit
-        # console.error error if error?
+  queues= []
+  for img,i in imgs
+    do (img,i)->
+      next= ->
+        queues[i+1]() if queues[i+1]?
+        delete queues[i+1]
+      queues.push ->
+        Jaggy.createSVG img,Jaggy.options,(error,svg)->
+          return if error is yes # pixelLimit
+          # console.error error if error?
 
-        svg= Jaggy.regenerateUUID svg if not error?
-        svg= Jaggy.emptySVG() if error? and Jaggy.options.emptySVG
-        img.parentNode.replaceChild svg,img
+          svg= Jaggy.regenerateUUID svg if not error?
+          svg= Jaggy.emptySVG() if error? and Jaggy.options.emptySVG
+          img.parentNode.replaceChild svg,img
+          next()
+
+  queues[0]() if queues[0]?
 
 Jaggy.regenerateUUID= (svg)->
   script= svg.querySelector 'script'
