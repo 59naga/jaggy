@@ -1,6 +1,7 @@
 version= (require '../package.json').version
 Frames= (require './classes').Frames
 
+# Dependencies for node
 if not window?
   gutil= require 'gulp-util'
   through2= require 'through2'
@@ -14,6 +15,7 @@ if not window?
 getPixels= require 'get-pixels'
 gifyParse= require 'gify-parse'
 
+# Methods for node
 jaggy= (options={})->
   through2.obj (file,encode,next)->
     return @emit 'error',new gutil.PluginError 'jaggy','Streaming not supported' if file.isStream()
@@ -30,12 +32,8 @@ jaggy= (options={})->
 
         next()
 
-jaggy.convertToSVG= (pixels,args...)->
-  callback= null
-  options= {}
-  args.forEach (arg)-> switch typeof arg
-    when 'function' then callback= arg
-    when 'object' then options= arg
+jaggy.convertToSVG= (pixels,args...,callback)->
+  options= args[0] or {}
   options.glitch= +options.glitch if typeof options.glitch is 'string'
   return callback new Error('glitch is 0') if options.glitch is 0
 
@@ -45,13 +43,10 @@ jaggy.convertToSVG= (pixels,args...)->
   # fix to domlite
   if not window?
     svg= svg.outerHTML.replace ' viewbox=',' viewBox='
-    svg= svg.replace(/&gt;/g,'>')
-
-  jaggy.setCache options.cacheUrl,svg,options if options.cacheUrl?
+    svg= svg.replace /&gt;/g,'>'
 
   callback null,svg
 
-# Use Buffer for node.js
 jaggy.readImageData= (file,callback)->
   return callback 'file is not object' if typeof file isnt 'object'
   
@@ -81,15 +76,15 @@ jaggy.convert= (pixels,options={})->
 
   new Frames pixels,options
 
-jaggy.cli= ->
+jaggy.cli= (argv)->
   cli= new Command
   cli
     .version version
     .usage 'file/directory [options...]'
-    .option '-r recursive','Convert pixelarts in recursive directory'
-    .option '-o output <directory>','Output directory <./>','.'
-    .option '-g --glitch <increment>','Glitch color palettes <4>',4
-    .parse process.argv
+    .option '-r, --recursive','Convert pixelarts in recursive directory'
+    .option '-o, --output <directory>','Output directory <./>','.'
+    .option '-g, --glitch <increment>','Glitch color palettes <4>',4
+    .parse argv
   cli.help() if cli.args.length is 0
 
   globs= []

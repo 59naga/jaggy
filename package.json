@@ -1,29 +1,28 @@
 {
   "name": "jaggy",
   "main": "jaggy",
-  "bin": "jaggy",
+  "bin" : "jaggy",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.10",
+  "version": "0.1.14",
 
   "scripts": {
     "build": "browserify lib/jaggy.browser.coffee -t coffeeify --extension .coffee | ng-annotate - --add > public/jaggy.browser.js",
     "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js --prefix 1",
+
+    "watch": "abigail ./**/*.coffee:devbuild --ignore --execute",
     "devbuild": "browserify lib/jaggy.browser.coffee -t coffeeify --extension .coffee | ng-annotate - --add > public/jaggy.browser.js",
-
-    "prestart": "onefile --json --output public/pkgs",
-    "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",
-    "watch": "abigail ./**/*.coffee:build --ignore --execute",
-    "convert": "jaggy public -o hogekosan -g 2",
-
-    "update-bower": "git tag v$(jqn bower version) &&  git push --tags",
 
     "test": "jasminetea test --verbose --cover --report --timeout 20000",
     "posttest": "rm public/*.svg",
+    
+    "update-bower": "git tag v$(jqn bower version) &&  git push --tags",
 
-    "prepublish": "npm run build"
+    "prestart": "onefile --json --output public/pkgs",
+    "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",
+    "convert": "jaggy public -o hogekosan -g 2"
   },
   "dependencies": {
-    "coffee-script": "^1.9.0",
+    "coffee-script": "^1.8.0",
     "commander": "^2.6.0",
     "dom-lite": "^0.4.0",
     "get-pixels": "^3.1.0",

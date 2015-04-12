@@ -20,9 +20,7 @@
   "ignore": [
     "**/.*",
     "node_modules",
-    "bower_components",
-    "public_html",
-    "*.coffee"
+    "bower_components"
   ],
   "devDependencies": {
     "angular": "~1.3.13"

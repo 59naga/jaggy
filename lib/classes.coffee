@@ -1,3 +1,4 @@
+# Shim dependencies
 document= window?.document
 if not window?
   document= require('dom-lite').document
@@ -40,10 +41,15 @@ class Frames
     if @frames.length is 1
       svg.appendChild @frames[0].toG()
     else
-      svg.setAttribute 'id','A'+uuid()
+      svg.setAttribute 'id','A'+@uuid()
       svg.appendChild @createAnime()
       svg.appendChild @createScript(svg.id)
     svg
+
+  uuid:->
+    # via http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
+    S4=-> (((1+Math.random())*0x10000)|0).toString(16).substring(1)
+    S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4()
 
   createAnime:->
     g= document.createElementNS 'http://www.w3.org/2000/svg','g'
@@ -52,45 +58,39 @@ class Frames
     g
 
   createScript:(id)->
+    animation= (id)->
+      i= 0
+      frames= [].slice.call window.document.querySelectorAll '#'+id+'>g>g'
+      display= null
+
+      setTimeout -> nextFrame()
+      nextFrame=->
+        frame= frames[i]
+        frame= frames[i= 0] if frame is undefined
+        frame_id= frame.getAttribute 'id'
+        if frame_id is null
+          frame_id= id+'_'+('0000'+i).slice(-5) 
+          frame.setAttribute 'id',frame_id
+
+        if i is 0
+          uses= window.document.querySelectorAll '#'+id+'>use'
+          use.parentNode.removeChild use for use in uses
+
+        i++
+        createDisplay frame_id
+        setTimeout nextFrame,frame.getAttribute 'delay'
+
+      createDisplay=(frame_id)->
+        display= window.document.createElementNS 'http://www.w3.org/2000/svg','use'
+        display.setAttributeNS 'http://www.w3.org/1999/xlink','href','#'+frame_id if frame_id
+
+        anime= window.document.querySelector '#'+id
+        anime.insertBefore display,window.document.querySelector '#'+id+'>g' if anime?
+    animation= "function (id) {\n  var createDisplay, display, frames, i, nextFrame;\n  i = 0;\n  frames = [].slice.call(window.document.querySelectorAll(\'#\' + id + \'>g>g\'));\n  display = null;\n  setTimeout(function() {\n    return nextFrame();\n  });\n  nextFrame = function() {\n    var frame, frame_id, j, len, use, uses;\n    frame = frames[i];\n    if (frame === void 0) {\n      frame = frames[i = 0];\n    }\n    frame_id = frame.getAttribute(\'id\');\n    if (frame_id === null) {\n      frame_id = id + \'_\' + (\'0000\' + i).slice(-5);\n      frame.setAttribute(\'id\', frame_id);\n    }\n    if (i === 0) {\n      uses = window.document.querySelectorAll(\'#\' + id + \'>use\');\n      for (j = 0, len = uses.length; j < len; j++) {\n        use = uses[j];\n        use.parentNode.removeChild(use);\n      }\n    }\n    i++;\n    createDisplay(frame_id);\n    return setTimeout(nextFrame, frame.getAttribute(\'delay\'));\n  };\n  return createDisplay = function(frame_id) {\n    var anime;\n    display = window.document.createElementNS(\'http://www.w3.org/2000/svg\', \'use\');\n    if (frame_id) {\n      display.setAttributeNS(\'http://www.w3.org/1999/xlink\', \'href\', \'#\' + frame_id);\n    }\n    anime = window.document.querySelector(\'#\' + id);\n    if (anime != null) {\n      return anime.insertBefore(display, window.document.querySelector(\'#\' + id + \'>g\'));\n    }\n  };\n}"
+
     script= document.createElement 'script'
-    script.appendChild document.createTextNode "(#{animation.toString()})('#{id}');"
+    script.appendChild document.createTextNode "(#{animation})('#{id}');"
     script
-
-  # private
-
-  animation= (id)->
-    i= 0
-    frames= [].slice.call window.document.querySelectorAll '#'+id+'>g>g'
-    display= null
-
-    setTimeout -> nextFrame()
-    nextFrame=->
-      frame= frames[i]
-      frame= frames[i= 0] if frame is undefined
-      frame_id= frame.getAttribute 'id'
-      if frame_id is null
-        frame_id= id+'_'+('0000'+i).slice(-5) 
-        frame.setAttribute 'id',frame_id
-
-      if i is 0
-        uses= window.document.querySelectorAll '#'+id+'>use'
-        use.parentNode.removeChild use for use in uses
-
-      i++
-      createDisplay frame_id
-      setTimeout nextFrame,frame.getAttribute 'delay'
-
-    createDisplay=(frame_id)->
-      display= window.document.createElementNS 'http://www.w3.org/2000/svg','use'
-      display.setAttributeNS 'http://www.w3.org/1999/xlink','href','#'+frame_id if frame_id
-
-      anime= window.document.querySelector '#'+id
-      anime.insertBefore display,window.document.querySelector '#'+id+'>g' if anime?
-
-  uuid= ->
-    # via http://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript
-    S4=-> (((1+Math.random())*0x10000)|0).toString(16).substring(1)
-    S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4()
 
 class Frame# has many Color
   constructor:->
@@ -98,7 +98,7 @@ class Frame# has many Color
     for key,value of this
       delete this[key] if this.hasOwnProperty key and key isnt 'attrs'
 
-    return if image.data is undefined
+    return if not image.data?
 
     i= 0
     increment= if options.glitch? then options.glitch else 4

@@ -2,7 +2,7 @@
 
 ## for gulp
 ```bash
-$ npm install jaggy gulp
+$ npm install gulp jaggy
 ```
 
 gulpfile.js
@@ -20,7 +20,18 @@ gulp.task('default',function(){
 ```
 
 ```bash
-$ gulp # convert to .svg
+$ gulp # Create the .svg
+```
+
+## for CLI
+Can use jaggy command to folder or file.
+Create the sameName.svg by [.gif, .jpg, .png]
+
+Example:
+
+```bash
+$ npm install jaggy -g
+$ jaggy public_html --recursive
 ```
 
 ## for browser
@@ -29,22 +40,30 @@ $ bower install jaggy
 ```
 
 ```html
-<script src="bower_components/jaggy/sources/jaggy.browser.js"></script>
-<script>
-  jaggy('your_pixelart.png',function(error,svg){
-    console.log(svg);//object: <svg version="1.1" ...>...</svg>
-  });
-</script>
+<head>
+  <script src="bower_components/jaggy/sources/jaggy.browser.js"></script>
+</head>
+<body>
+  <img src="pixel_art.gif" class="jaggy">
+  <img src="pixel_art.jpg" class="jaggy">
+  <img src="pixel_art.png" class="jaggy">
+</body>
 ```
+
+* Add `jaggy.browser.js` for `<head>`.
+* Set `jaggy` class for `<img>`.
+* Converting after `DOMContentLoaded`.
+
 ***Doesn't work [Cross-origin][1]***
 
 [1]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
 
-## for angular.js
+## for angular.js 1.*
+
 ```html
 <head>
   <script src="bower_components/angular/angular.min.js"></script>
-  <script src="bower_components/jaggy/sources/jaggy.browser.js"></script>
+  <script src="bower_components/jaggy/public/jaggy.browser.js"></script>
   <script>angular.module('myApp',['jaggy'])</script>
 </head>
 <body ng-app="myApp">
@@ -52,66 +71,94 @@ $ bower install jaggy
 </body>
 ```
 
-## CLI
-```bash
-$ npm install jaggy -g
-$ jaggy public_html
-```
+Can use `jaggy` directive.
 
 ## Why?
 Doesn't work [`image-rendering:crisp-edges`](http://caniuse.com/#feat=css-crisp-edges).
 However, Can work on the [`<svg shape-rendering="crispEdges">`](http://caniuse.com/#feat=svg).
 Gotcha, save the jaggy.
 
-## Glitch option
-`{glitch:int}`
-### for gulp
-```js
-.pipe(jaggy({glitch:1}))
-```
+## Browser options
 ### for browser
 ```js
-jaggy('your_pixelart.png',{glitch:2},function(error,svg){
+<script>
+  // default true
+  jaggy.options.cache= false;
+
+  // default: true
+  jaggy.emptyImage= false;
+
+  // default 0
+  jaggy.options.pixelLimit= 128 * 128 * 4;
+
+  // default 4
+  jaggy.options.glitch= 3;
+</script>
 ```
-### for angular.js
+### for angular.js 1.*
 ```html
-<img src="your_pixelart.gif" jaggy="glitch:3" alt="">
-```
-### CLI
-```bash
-jaggy public_html -g 5
-```
+<script>
+var app=angular.module('myApp',['jaggy']);
+app.config(function(jaggy){
+  //default: true
+  jaggy.cache= false;
 
-## Caching a converted svg for angular.js
-```javascript
-app= anuglar.module('app',['jaggy'])
-app.constant('jaggyConfig',{
-  useCache: false,// default: true
-  useEmptyImage: false,// default: true
+  //default: true
+  jaggy.emptyImage= false;
+
+  //default: 0
+  jaggy.pixelLimit= 128 * 128 * 4;
+
+  //default: 4
+  jaggy.glitch= 3;
 });
+</script>
 ```
 
-### .useCache
-Caching a converted svg by localStorage.
+* `.cache`
+    Caching a converted svg by localStorage.
 
-### .useEmptyImage
-Replace empty image instead of Error. e.g. `<svg><path fill="rgba(0,0,0,0.50)"/>`
+* `.emptyImage`
+    Replace empty image instead of Error. e.g. `<svg><path fill="rgba(0,0,0,0.50)"/>`
 
-### .pixelLimit
-Skip the replacement if over set value.
+* `.pixelLimit`
+    Skip a converting if over set value.
 
-```
-<!-- skip a below -->
-<img src="very_long_animation.gif" jaggy="pixelLimit:1000000">
+    ```html
+    <!-- skip a below -->
+    <script>
+    var app=angular.module('myApp',['jaggy']);
+    app.config(function(jaggy){
+      jaggy.pixelLimit= 128 * 128 * 4 * 1;
+    });
+    </script>
+    <body>
+      <img src="huge_pixelart.png" jaggy>
+      <img src="long_animation.gif" jaggy>
+    </body>
 
-<!-- unlimited -->
-<img src="very_long_animation.gif" jaggy="pixelLimit:0">
-```
-Default: 262145 (width 256 * height 256 * channel 4 * frame 1 + 1)
+    <!-- unlimited -->
+    <script>
+    var app=angular.module('myApp',['jaggy']);
+    app.config(function(jaggy){
+      jaggy.pixelLimit= 0;
+    });
+    </script>
+    <!-- ... -->
+    ```
+
+    Default: 262144 (= width 256 * height 256 * channel 4 * frame 1)
+
+* `.glitch`
+    Change `Frame.putImageData` logic by increment channel value.
 
 ## Known issue
 * Animated gif Can be convert, But, It's so very very heavy.
 * Uncaught QuotaExceededError: Failed to execute 'setItem' on 'Storage': Setting the value of `jaggy:url` exceeded the quota. due to Huge Animationed gif
+
+## TODO
+* TEST for jaggy.browser.coffee
+* TEST for jaggy.angular.coffee
 
 License
 =========================

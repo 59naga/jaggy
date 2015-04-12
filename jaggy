@@ -4,7 +4,7 @@ if(typeof require('module')._extensions['.coffee']==='undefined'){
   // Avoid conflicts with another version
   require('coffee-script/register');
 }
-var jaggy= require('./lib/jaggy.coffee');
+var jaggy= require('./lib/jaggy');
 
 if(module.parent===null){
   process.on('uncaughtException',function(error){
@@ -12,7 +12,7 @@ if(module.parent===null){
     process.exit(1);
   });
   
-  jaggy.cli(process.argv.slice(2));
+  jaggy.cli(process.argv);
 }
 
 module.exports= jaggy;

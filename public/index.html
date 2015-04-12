@@ -5,48 +5,60 @@
   <title>Document</title>
   <script src="pkgs.js"></script>
   <script src="jaggy.browser.min.js"></script>
-  <script title="for browser">
-    jaggy('moon.png',function(error,svg){
-      document.querySelector('section').appendChild(svg);
-    });
 
-    jaggy('moon.png',{glitch:1},function(error,svg){
-      document.body.appendChild(svg);
-    });
-  </script>
   <script title="for angular.js">
     var app=angular.module('myApp',['jaggy']);
-    app.run(function($rootScope,jaggyConfig){
+    app.config(function(jaggy){
+      //default: true
+      // jaggy.cache= false;
+
+      //default: true
+      // jaggy.emptyImage= false;
+
+      //default: 0
+      // jaggy.pixelLimit= 128 * 128 * 4;
+
+      //default: 4
+      // jaggy.glitch= 3;
+    });
+    app.run(function($rootScope,jaggy){
       $rootScope.toggle= function(){
-        var glitch= jaggyConfig.glitch;
-        jaggyConfig.glitch= glitch===4 ? 1+~~(2*Math.random()): 4;
+        var glitch= jaggy.glitch;
+        window.jaggy.flush()
+        jaggy.glitch= glitch===4 ? 2+~~(2*Math.random()): 4;
       };
     });
-    // app.constant('jaggyConfig',{useCache:false,useEmptyImage:false})
   </script>
   <style>
     svg{width:100%}
   </style>
 </head>
-<body ng-app="myApp">
-  <section>
-    <h2>via gulp.js (<code>$ npm test</code>)</h2>
-    <object data="tumblr_n39vfaV03s1rnbw6mo1_400.svg" alt="via gulp" type="image/svg+xml"></object>
-    <img src="chrono_trigger.svg" alt="via gulp">
-
-    <h2>via angular.js</h2>
+<body>
+  <section ng-app="myApp">
+    <h2>angular.js</h2>
     <p><a href="#" ng-click="toggle()">toggle glitch</a></p>
-    <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy alt="for Angular.js">
-    <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy="pixelLimit:0" alt="">
     <img ng-src="uma.gif" jaggy alt="for Angular.js">
-    <img ng-src="yuno.png" jaggy alt="for Angular.js">
+    <img ng-src="uma.gif" jaggy alt="for Angular.js">
+    <img ng-src="uma.gif" jaggy alt="for Angular.js">
+    <img ng-src="uma.gif" jaggy alt="for Angular.js">
+    <img ng-src="uma.gif" jaggy alt="for Angular.js">
     <img ng-src="moon.png" jaggy alt="for Angular.js">
-    <img ng-src="comeon! emptyimage" jaggy alt="for Angular.js">
-
-    <h2>via jaggy API(<code>window.jaggy</code>)</h2>
-    <figure>
-      <!-- window.jaggy here... -->
-    </figure>
+    <img ng-src="yuno.png" jaggy alt="for Angular.js">
+    <img ng-src="nothing" jaggy alt="for Angular.js">
+    <!-- <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy alt="for Angular.js"> -->
+    <!-- <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy="pixelLimit:0" alt=""> -->
+  </section>
+  
+  <section id="vanilla">
+    <img src="uma.gif" class="jaggy">
+    <img src="uma.gif" class="jaggy">
+    <img src="uma.gif" class="jaggy">
+    <img src="uma.gif" class="jaggy">
+    <img src="uma.gif" class="jaggy">
+    <img src="uma.gif" class="jaggy">
+    <img src="moon.png" class="jaggy">
+    <img src="yuno.png" class="jaggy">
+    <img src="nothing" class="jaggy">
   </section>
 </body>
 </html>
