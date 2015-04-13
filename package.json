@@ -29,6 +29,7 @@
     "gify-parse": "^1.0.4",
     "gulp": "*",
     "gulp-util": "^3.0.3",
+    "lz-string": "^1.4.1",
     "mime": "^1.2.11",
     "through2": "^0.6.3"
   },

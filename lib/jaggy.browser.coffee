@@ -5,22 +5,46 @@ Jaggy.options=
   cacheScript: 'base64'
   emptySVG: yes
   pixelLimit: 0
+  timeout: 0
   glitch: 4
+  debug: off
 
 Frames= (require './classes').Frames
 
 getPixels= require 'get-pixels'
 gifyParse= require 'gify-parse'
+LZString= require 'lz-string'
 
 # Methods for browser
 Jaggy.createSVG= (img,args...,callback)->
+  beginQueue= not Jaggy.queues?
+  requestAnimationFrame ->
+    Jaggy.nextQueue() if beginQueue
+
+  Jaggy.queues?= []
+  queues= Jaggy.queues
+  queues.push arguments
+Jaggy.nextQueue= ->
+  queue= Jaggy.queues.shift()
+  return Jaggy.queues= null if not queue?
+
+  [img,args...,callback]= queue
+  options= args[0] or {}
+  Jaggy._createSVG img,options,->
+    callback arguments...
+
+    Jaggy.nextQueue()
+
+Jaggy._createSVG= (img,args...,callback)->
   url= img.getAttribute 'src' if img.getAttribute?
   url?= img
   options= args[0] or {}
   cacheUrl= url+options.glitch
 
   if options.cache
+    begin= Date.now()
     cache= Jaggy.getCache cacheUrl,options
+    console.log 'jaggy:cached',cacheUrl,cache.innerHTML.length.toLocaleString(),'decompressed',Date.now()-begin,'msec' if Jaggy.options.debug and cache?
     return callback null,cache if cache? and options.cache
   
   getPixels url,(error,pixels)->
@@ -28,13 +52,17 @@ Jaggy.createSVG= (img,args...,callback)->
     return callback true,null if options.pixelLimit>0 and pixels.data.length> options.pixelLimit
 
     if pixels.shape.length is 3
+      begin= Date.now()
       Jaggy.convertToSVG pixels,options,(error,svg)->
         Jaggy.setCache cacheUrl,svg,options if options.cache
+        console.log 'jaggy:converted',cacheUrl,Date.now()-begin,'msec' if Jaggy.options.debug
+        console.log 'jaggy:rendered',cacheUrl,svg.innerHTML.length.toLocaleString() if Jaggy.options.debug
         callback error,svg
 
     if pixels.shape.length is 4
       xhr= new XMLHttpRequest
       xhr.open 'GET',url,true
+      xhr.timeout= Jaggy.options.timeout
       xhr.responseType= 'arraybuffer'
       xhr.send()
       xhr.onerror= -> callback xhr.statusText,null
@@ -44,8 +72,11 @@ Jaggy.createSVG= (img,args...,callback)->
         anime.disposals= anime.images.map (image)-> image.disposal
         pixels.anime= anime
 
+        begin= Date.now()
         Jaggy.convertToSVG pixels,options,(error,svg)->
           Jaggy.setCache cacheUrl,svg,options if options.cache
+          console.log 'jaggy:converted',cacheUrl,Date.now()-begin,'msec' if Jaggy.options.debug
+          console.log 'jaggy:rendered',cacheUrl,svg.innerHTML.length.toLocaleString() if Jaggy.options.debug
           callback error,svg
 
 Jaggy.flush= ()->
@@ -55,7 +86,7 @@ Jaggy.flush= ()->
 
 Jaggy.getCache= (url,options={})->
   div= document.createElement 'div'
-  div.innerHTML= localStorage.getItem 'jaggy:'+url
+  div.innerHTML= LZString.decompressFromBase64 localStorage.getItem 'jaggy:'+url
 
   # Decoding via localStorage
   if options.cacheScript is 'base64'
@@ -78,7 +109,10 @@ Jaggy.setCache= (url,element,options={})->
 
   # Maybe error due to capacity 10MB
   try
-    localStorage.setItem 'jaggy:'+url,cache
+    compressed= LZString.compressToBase64 cache
+    if Jaggy.options.debug
+      console.log 'jaggy:compressed',url,~~((cache.length-compressed.length)/cache.length*100)+'%',cache.length.toLocaleString(),'->',compressed.length.toLocaleString()
+    localStorage.setItem 'jaggy:'+url,compressed
   catch error
     localStorage.removeItem 'jaggy:'+url
     

@@ -5,7 +5,7 @@ service.constant 'jaggy',window.jaggy.options
 
 service.config (jaggy)->
   key= 'jaggy:version'
-  value= '0.1.15'
+  value= '0.1.16'
   localStorage.clear() if localStorage.getItem(key) isnt value
   localStorage.setItem key,value
 

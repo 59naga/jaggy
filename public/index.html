@@ -18,14 +18,19 @@
       //default: 0
       // jaggy.pixelLimit= 128 * 128 * 4;
 
+      //default: 0
+      // jaggy.timeout= 1;
+
       //default: 4
       // jaggy.glitch= 3;
+
+      //default: false
+      // jaggy.debug= true;
     });
     app.run(function($rootScope,jaggy){
       $rootScope.toggle= function(){
-        var glitch= jaggy.glitch;
-        window.jaggy.flush()
-        jaggy.glitch= glitch===4 ? 2+~~(2*Math.random()): 4;
+        var normal= jaggy.glitch===4;
+        jaggy.glitch= normal? 2+~~(2*Math.random()): 4;
       };
     });
   </script>
@@ -44,12 +49,12 @@
     <img ng-src="uma.gif" jaggy alt="for Angular.js">
     <img ng-src="moon.png" jaggy alt="for Angular.js">
     <img ng-src="yuno.png" jaggy alt="for Angular.js">
-    <img ng-src="nothing" jaggy alt="for Angular.js">
     <!-- <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy alt="for Angular.js"> -->
     <!-- <img src="tumblr_n39vfaV03s1rnbw6mo1_400.gif" jaggy="pixelLimit:0" alt=""> -->
   </section>
   
   <section id="vanilla">
+    <h2>standalone</h2>
     <img src="uma.gif" class="jaggy">
     <img src="uma.gif" class="jaggy">
     <img src="uma.gif" class="jaggy">

@@ -1,3 +1,10 @@
+v0.1.16 / Apr 14 2015
+=========================
+ * [`unknown`][12] :racehorse: Add Jaggy.queues for Jaggy.createSVG
+ * [`unknown`][12] :lipstick: Move Jaggy.createSVG to Jaggy._createSVG
+ * [`unknown`][12] :racehorse: Add Jaggy.options.timeout for Jaggy._createSVG
+ * [`unknown`][12] :racehorse: Add lz-string for caching(setCache/getCache)
+
 v0.1.15 / Apr 12 2015
 =========================
  * [`20c58d2`][9] :bulb: Add jaggy.pixelLimit for angular.js
