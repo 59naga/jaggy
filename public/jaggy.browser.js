@@ -423,6 +423,10 @@ Jaggy.createSVG = function() {
   });
   if (Jaggy.queues == null) {
     Jaggy.queues = [];
+    Jaggy.begin = Date.now();
+    if (Jaggy.options.debug) {
+      console.log('jaggy:createSVG', 'start');
+    }
   }
   queues = Jaggy.queues;
   return queues.push(arguments);
@@ -432,6 +436,9 @@ Jaggy.nextQueue = function() {
   var args, callback, img, j, options, queue;
   queue = Jaggy.queues.shift();
   if (queue == null) {
+    if (Jaggy.options.debug) {
+      console.log('jaggy:createSVG', 'successfully', (Date.now() - Jaggy.begin).toLocaleString(), 'msec');
+    }
     return Jaggy.queues = null;
   }
   img = queue[0], args = 3 <= queue.length ? slice.call(queue, 1, j = queue.length - 1) : (j = 1, []), callback = queue[j++];
@@ -6808,7 +6815,8 @@ Command.prototype.__proto__ = EventEmitter.prototype;
  * @api public
  */
 
-Command.prototype.command = function(name, desc) {
+Command.prototype.command = function(name, desc, opts) {
+  opts = opts || {};
   var args = name.split(/ +/);
   var cmd = new Command(args.shift());
 
@@ -6818,6 +6826,7 @@ Command.prototype.command = function(name, desc) {
     this._execs[cmd._name] = true;
   }
 
+  cmd._noHelp = !!opts.noHelp;
   this.commands.push(cmd);
   cmd.parseExpectedArgs(args);
   cmd.parent = this;
@@ -6825,6 +6834,16 @@ Command.prototype.command = function(name, desc) {
   if (desc) return this;
   return cmd;
 };
+
+/**
+ * Define argument syntax for the top-level command.
+ *
+ * @api public
+ */
+
+Command.prototype.arguments = function (desc) {
+  return this.parseExpectedArgs(desc.split(/ +/));
+}
 
 /**
  * Add an implicit `help [cmd]` subcommand
@@ -6940,8 +6959,10 @@ Command.prototype.action = function(fn) {
 
     fn.apply(self, args);
   };
-  this.parent.on(this._name, listener);
-  if (this._alias) this.parent.on(this._alias, listener);
+  var parent = this.parent || this;
+  var name = parent === this ? '*' : this._name;
+  parent.on(name, listener);
+  if (this._alias) parent.on(this._alias, listener);
   return this;
 };
 
@@ -7083,6 +7104,12 @@ Command.prototype.parse = function(argv) {
   // guess name
   this._name = this._name || basename(argv[1], '.js');
 
+  // github-style sub-commands with no sub-command
+  if (this.executables && argv.length < 3) {
+    // this user needs help
+    argv.push('--help');
+  }
+
   // process argv
   var parsed = this.parseOptions(this.normalize(argv.slice(2)));
   var args = this.args = parsed.args;
@@ -7121,30 +7148,48 @@ Command.prototype.executeSubCommand = function(argv, args, unknown) {
 
   // executable
   var f = argv[1];
-  var link = readlink(f);
+  // name of the subcommand, link `pm-install`
+  var bin = basename(f, '.js') + '-' + args[0];
+
+
+  // In case of globally installed, get the base dir where executable
+  //  subcommand file should be located at
+  var baseDir
+    , link = readlink(f);
+
+  // when symbolink is relative path
   if (link !== f && link.charAt(0) !== '/') {
     link = path.join(dirname(f), link)
   }
-  var dir = dirname(link);
-  var bin = basename(f, '.js') + '-' + args[0];
+  baseDir = dirname(link);
 
   // prefer local `./<bin>` to bin in the $PATH
-  var local = path.join(dir, bin);
-  try {
-    // for versions before node v0.8 when there weren't `fs.existsSync`
-    if (fs.statSync(local).isFile()) {
-      bin = local;
-    }
-  } catch (e) {}
+  var localBin = path.join(baseDir, bin);
 
-  // run it
+  // whether bin file is a js script with explicit `.js` extension
+  var isExplicitJS = false;
+  if (exists(localBin + '.js')) {
+    bin = localBin + '.js';
+    isExplicitJS = true;
+  } else if (exists(localBin)) {
+    bin = localBin;
+  }
+
   args = args.slice(1);
 
   var proc;
   if (process.platform !== 'win32') {
-    proc = spawn(bin, args, { stdio: 'inherit', customFds: [0, 1, 2] });
+    if (isExplicitJS) {
+      args.unshift(localBin);
+      // add executable arguments to spawn
+      args = (process.execArgv || []).concat(args);
+
+      proc = spawn('node', args, { stdio: 'inherit', customFds: [0, 1, 2] });
+    } else {
+      proc = spawn(bin, args, { stdio: 'inherit', customFds: [0, 1, 2] });
+    }
   } else {
-    args.unshift(local);
+    args.unshift(localBin);
     proc = spawn(process.execPath, args, { stdio: 'inherit'});
   }
 
@@ -7525,7 +7570,7 @@ Command.prototype.optionHelp = function() {
   // Prepend the help information
   return [pad('-h, --help', width) + '  ' + 'output usage information']
     .concat(this.options.map(function(option) {
-      return pad(option.flags, width) + '  ' + option.description;
+      return pad(option.flags, width) + '  ' + offset(option.description, width + 2);
       }))
     .join('\n');
 };
@@ -7540,7 +7585,9 @@ Command.prototype.optionHelp = function() {
 Command.prototype.commandHelp = function() {
   if (!this.commands.length) return '';
 
-  var commands = this.commands.map(function(cmd) {
+  var commands = this.commands.filter(function(cmd) {
+    return !cmd._noHelp;
+  }).map(function(cmd) {
     var args = cmd._args.map(function(arg) {
       return humanReadableArgName(arg);
     }).join(' ');
@@ -7567,7 +7614,7 @@ Command.prototype.commandHelp = function() {
     , '  Commands:'
     , ''
     , commands.map(function(cmd) {
-      return pad(cmd[0], width) + '  ' + cmd[1];
+      return pad(cmd[0], width) + '  ' + offset(cmd[1], width + 2);
     }).join('\n').replace(/^/gm, '    ')
     , ''
   ].join('\n');
@@ -7595,7 +7642,7 @@ Command.prototype.helpInformation = function() {
   }
   var usage = [
     ''
-    ,'  Usage: ' + cmdName + ' ' + this.usage()
+    ,'  Usage: ' + cmdName + ' ' + offset(this.usage(), 9)
     , ''
   ];
 
@@ -7669,6 +7716,23 @@ function pad(str, width) {
 }
 
 /**
+ * Prepend to each line of `str` spaced string of `offset` length.
+ *
+ * @param {String} str
+ * @param {Number} offset
+ * @param {Boolean} skipFirstLine
+ * @return {String}
+ * @api private
+ */
+function offset(str, offset, skipFirstLine) {
+  var res = String(str || '').replace(/^/gm, pad('', offset));
+  if (!skipFirstLine) {
+    res = res.replace(/^\s+/, '');
+  }
+  return res;
+}
+
+/**
  * Output help information if necessary
  *
  * @param {Command} command to output help for
@@ -7682,6 +7746,9 @@ function outputHelpIfNecessary(cmd, options) {
     if (options[i] == '--help' || options[i] == '-h') {
       cmd.outputHelp();
       process.exit(0);
+
+      // used for test flow only
+      options.splice(i, 1);
     }
   }
 }
@@ -7701,6 +7768,18 @@ function humanReadableArgName(arg) {
     ? '<' + nameOutput + '>'
     : '[' + nameOutput + ']'
 }
+
+// for versions before node v0.8 when there weren't `fs.existsSync`
+function exists(file) {
+  try {
+    if (fs.statSync(file).isFile()) {
+      return true;
+    }
+  } catch (e) {
+    return false;
+  }
+}
+
 
 }).call(this,require('_process'))
 },{"_process":17,"child_process":5,"events":13,"fs":5,"graceful-readlink":37,"path":16}],37:[function(require,module,exports){

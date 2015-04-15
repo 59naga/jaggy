@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <title>Document</title>
   <script src="pkgs.js"></script>
-  <script src="jaggy.browser.js"></script>
+  <script src="jaggy.browser.min.js"></script>
+  <script>
+    console.log(jaggy.flush());
+  </script>
 
   <script title="for angular.js">
     var app=angular.module('myApp',['jaggy']);
@@ -16,7 +19,7 @@
       // jaggy.emptyImage= false;
 
       //default: 0
-      // jaggy.pixelLimit= 128 * 128 * 4;
+      // jaggy.pixelLimit= 512 * 512 * 4;
 
       //default: 0
       // jaggy.timeout= 1;
@@ -25,7 +28,7 @@
       // jaggy.glitch= 3;
 
       //default: false
-      // jaggy.debug= true;
+      jaggy.debug= true;
     });
     app.run(function($rootScope,jaggy){
       $rootScope.toggle= function(){

@@ -21,12 +21,18 @@ Jaggy.createSVG= (img,args...,callback)->
   requestAnimationFrame ->
     Jaggy.nextQueue() if beginQueue
 
-  Jaggy.queues?= []
+  if not Jaggy.queues?
+    Jaggy.queues= []
+    Jaggy.begin= Date.now()
+    console.log 'jaggy:createSVG','start' if Jaggy.options.debug
+
   queues= Jaggy.queues
   queues.push arguments
 Jaggy.nextQueue= ->
   queue= Jaggy.queues.shift()
-  return Jaggy.queues= null if not queue?
+  if not queue?
+    console.log 'jaggy:createSVG','successfully',(Date.now()- Jaggy.begin).toLocaleString(),'msec' if Jaggy.options.debug
+    return Jaggy.queues= null
 
   [img,args...,callback]= queue
   options= args[0] or {}

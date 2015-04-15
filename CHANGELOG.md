@@ -1,4 +1,4 @@
-v0.1.16 / Apr 14 2015
+v0.1.17 / Apr 15 2015
 =========================
  * [`unknown`][12] :racehorse: Add Jaggy.queues for Jaggy.createSVG
  * [`unknown`][12] :lipstick: Move Jaggy.createSVG to Jaggy._createSVG
