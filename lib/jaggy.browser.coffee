@@ -70,7 +70,6 @@ Jaggy._createSVG= (img,args...,callback)->
       xhr.open 'GET',url,true
       xhr.timeout= Jaggy.options.timeout
       xhr.responseType= 'arraybuffer'
-      xhr.send()
       xhr.onerror= -> callback xhr.statusText,null
       xhr.onload= ->
         anime= gifyParse.getInfo xhr.response
@@ -84,6 +83,7 @@ Jaggy._createSVG= (img,args...,callback)->
           console.log 'jaggy:converted',cacheUrl,Date.now()-begin,'msec' if Jaggy.options.debug
           console.log 'jaggy:rendered',cacheUrl,svg.innerHTML.length.toLocaleString() if Jaggy.options.debug
           callback error,svg
+      xhr.send()
 
 Jaggy.flush= ()->
   for key in Object.keys localStorage
