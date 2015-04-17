@@ -498,10 +498,11 @@ Jaggy._createSVG = function() {
       xhr.open('GET', url, true);
       xhr.timeout = Jaggy.options.timeout;
       xhr.responseType = 'arraybuffer';
+      xhr.send();
       xhr.onerror = function() {
         return callback(xhr.statusText, null);
       };
-      xhr.onload = function() {
+      return xhr.onload = function() {
         var anime;
         anime = gifyParse.getInfo(xhr.response);
         anime.delays = anime.images.map(function(image) {
@@ -525,7 +526,6 @@ Jaggy._createSVG = function() {
           return callback(error, svg);
         });
       };
-      return xhr.send();
     }
   });
 };
@@ -8289,6 +8289,7 @@ var parseDataURI  = require('data-uri-to-buffer')
 
 function defaultImage(url, cb) {
   var img = new Image()
+  img.crossOrigin = "Anonymous"
   img.onload = function() {
     var canvas = document.createElement('canvas')
     canvas.width = img.width
@@ -8344,8 +8345,11 @@ function handleGif(data, cb) {
 
 function httpGif(url, cb) {
   var xhr          = new XMLHttpRequest()
+  xhr.open('GET', url, true)
   xhr.responseType = 'arraybuffer'
-  xhr.overrideMimeType('application/binary')
+  if(xhr.overrideMimeType){
+    xhr.overrideMimeType('application/binary')
+  }
   xhr.onerror = function(err) {
     cb(err)
   }
@@ -8357,7 +8361,6 @@ function httpGif(url, cb) {
     handleGif(data, cb)
     return
   }
-  xhr.open('GET', url, true)
   xhr.send()
 }
 
@@ -29375,7 +29378,7 @@ module.exports={
     "coffee-script": "^1.8.0",
     "commander": "^2.6.0",
     "dom-lite": "^0.4.0",
-    "get-pixels": "^3.1.0",
+    "get-pixels": "git://github.com/59naga/get-pixels.git#IE",
     "gify-parse": "^1.0.4",
     "gulp": "*",
     "gulp-util": "^3.0.3",
