@@ -13,7 +13,10 @@ service.directive 'jaggy',(
   jaggy
   $compile
 )->
-  (scope,element,attrs)->
+  scope:{
+    jagged:'='
+  }
+  link:(scope,element,attrs)->
     element.css 'display','none'
 
     scope.config= jaggy
@@ -48,3 +51,5 @@ service.directive 'jaggy',(
         # fix animatedGif caching
         script= element.find 'script'
         eval script.html() if script?
+
+        scope.jagged scope,element,attrs if typeof scope.jagged is 'function'

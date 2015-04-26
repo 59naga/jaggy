@@ -330,60 +330,68 @@ service.config(["jaggy", function(jaggy) {
 }]);
 
 service.directive('jaggy', ["jaggy", "$compile", function(jaggy, $compile) {
-  return function(scope, element, attrs) {
-    var createSVG;
-    element.css('display', 'none');
-    scope.config = jaggy;
-    scope.$watch('config', (function() {
-      return createSVG();
-    }), true);
-    return createSVG = function() {
-      var i, key, len, options, param, ref, ref1, url, value;
-      url = attrs.src;
-      if (url == null) {
-        url = attrs.ngSrc;
-      }
-      if ((url == null) || url.length === 0) {
-        if (jaggy.emptySVG) {
-          element.replaceWith(Jaggy.emptySVG());
+  return {
+    scope: {
+      jagged: '='
+    },
+    link: function(scope, element, attrs) {
+      var createSVG;
+      element.css('display', 'none');
+      scope.config = jaggy;
+      scope.$watch('config', (function() {
+        return createSVG();
+      }), true);
+      return createSVG = function() {
+        var i, key, len, options, param, ref, ref1, url, value;
+        url = attrs.src;
+        if (url == null) {
+          url = attrs.ngSrc;
         }
-        return;
-      }
-      options = angular.copy(jaggy);
-      if (attrs.jaggy) {
-        ref = attrs.jaggy.split(';');
-        for (i = 0, len = ref.length; i < len; i++) {
-          param = ref[i];
-          ref1 = param.split(':'), key = ref1[0], value = ref1[1];
-          options[key] = value;
-        }
-      }
-      return Jaggy.createSVG(url, options, function(error, svg) {
-        var angularElement, script, svgElement;
-        if (svg != null) {
-          svg = Jaggy.regenerateUUID(svg);
-        }
-        if (svg != null) {
-          svgElement = angular.element(svg);
-        }
-        if (error) {
-          if (error === true) {
-            return element.css('display', null);
+        if ((url == null) || url.length === 0) {
+          if (jaggy.emptySVG) {
+            element.replaceWith(Jaggy.emptySVG());
           }
-          if (!jaggy.emptySVG) {
-            throw error;
+          return;
+        }
+        options = angular.copy(jaggy);
+        if (attrs.jaggy) {
+          ref = attrs.jaggy.split(';');
+          for (i = 0, len = ref.length; i < len; i++) {
+            param = ref[i];
+            ref1 = param.split(':'), key = ref1[0], value = ref1[1];
+            options[key] = value;
           }
-          svgElement = angular.element(Jaggy.emptySVG());
         }
-        angularElement = $compile(svgElement)(scope);
-        element.replaceWith(angularElement);
-        element = angularElement;
-        script = element.find('script');
-        if (script != null) {
-          return eval(script.html());
-        }
-      });
-    };
+        return Jaggy.createSVG(url, options, function(error, svg) {
+          var angularElement, script, svgElement;
+          if (svg != null) {
+            svg = Jaggy.regenerateUUID(svg);
+          }
+          if (svg != null) {
+            svgElement = angular.element(svg);
+          }
+          if (error) {
+            if (error === true) {
+              return element.css('display', null);
+            }
+            if (!jaggy.emptySVG) {
+              throw error;
+            }
+            svgElement = angular.element(Jaggy.emptySVG());
+          }
+          angularElement = $compile(svgElement)(scope);
+          element.replaceWith(angularElement);
+          element = angularElement;
+          script = element.find('script');
+          if (script != null) {
+            eval(script.html());
+          }
+          if (typeof scope.jagged === 'function') {
+            return scope.jagged(scope, element, attrs);
+          }
+        });
+      };
+    }
   };
 }]);
 
