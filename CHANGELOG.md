@@ -1,9 +1,20 @@
+v0.1.17-rc.2 / Apr 26 2015
+=========================
+ * [`unknown`][13] :bug: Fix [#6][13A]
+ * [`unknown`][13] :bug: Fix [#7][13B]
+
+[13]: https://github.com/59naga/jaggy/commit/
+[13A]: https://github.com/59naga/jaggy/issues/6
+[13B]: https://github.com/59naga/jaggy/issues/7
+
 v0.1.17 / Apr 15 2015
 =========================
- * [`unknown`][12] :racehorse: Add Jaggy.queues for Jaggy.createSVG
- * [`unknown`][12] :lipstick: Move Jaggy.createSVG to Jaggy._createSVG
- * [`unknown`][12] :racehorse: Add Jaggy.options.timeout for Jaggy._createSVG
- * [`unknown`][12] :racehorse: Add lz-string for caching(setCache/getCache)
+ * [`5078a94`][12] :racehorse: Add Jaggy.queues for Jaggy.createSVG
+ * [`5078a94`][12] :lipstick: Move Jaggy.createSVG to Jaggy._createSVG
+ * [`5078a94`][12] :racehorse: Add Jaggy.options.timeout for Jaggy._createSVG
+ * [`5078a94`][12] :racehorse: Add lz-string for caching(setCache/getCache)
+
+[12]: https://github.com/59naga/jaggy/commit/5078a9470f3026702a0fdf01a1e7a0d749d29dd5
 
 v0.1.15 / Apr 12 2015
 =========================
@@ -14,11 +25,11 @@ v0.1.15 / Apr 12 2015
      * jaggyConfig.useCache to `jaggy.cache`
      * jaggyConfig.useEmptyImage to `jaggy.emptyImage`
  * [`bbc4132`][10] :bug: Fix duplicate uuid for animation
- * [`unknown`][11] :bug: Fix InvalidCharacterError: DOM Exception 5 on safari
+ * [`2fb60d9`][11] :bug: Fix InvalidCharacterError: DOM Exception 5 on safari
 
 [9]: https://github.com/59naga/jaggy/commit/20c58d2ea152ce4481a634f35562ea7e2334e9fe
 [10]: https://github.com/59naga/jaggy/commit/bbc413299f362e5e26d270b04237ddda61c21927
-[11]: https://github.com/59naga/jaggy/commit/
+[11]: https://github.com/59naga/jaggy/commit/2fb60d9db8df447ac222385ae6274225c14747af
 
 v0.1.13 / Apr 10 2015
 =========================

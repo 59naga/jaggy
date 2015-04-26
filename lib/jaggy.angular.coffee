@@ -11,6 +11,7 @@ service.config (jaggy)->
 
 service.directive 'jaggy',(
   jaggy
+  $compile
 )->
   (scope,element,attrs)->
     element.css 'display','none'
@@ -40,8 +41,9 @@ service.directive 'jaggy',(
           return element.css 'display',null if error is true # over pixelLimit
           throw error if not jaggy.emptySVG
           svgElement= angular.element Jaggy.emptySVG()
-        element.replaceWith svgElement
-        element= svgElement
+        angularElement= $compile(svgElement) scope
+        element.replaceWith angularElement
+        element= angularElement
 
         # fix animatedGif caching
         script= element.find 'script'

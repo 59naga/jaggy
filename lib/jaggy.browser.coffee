@@ -82,7 +82,7 @@ Jaggy._createSVG= (img,args...,callback)->
         Jaggy.convertToSVG pixels,options,(error,svg)->
           Jaggy.setCache cacheUrl,svg,options if options.cache
           console.log 'jaggy:converted',cacheUrl,Date.now()-begin,'msec' if Jaggy.options.debug
-          console.log 'jaggy:rendered',cacheUrl,svg.innerHTML.length.toLocaleString() if Jaggy.options.debug
+          console.log 'jaggy:rendered',cacheUrl,svg?.innerHTML.length.toLocaleString() if Jaggy.options.debug
           callback error,svg
 
 Jaggy.flush= ()->
