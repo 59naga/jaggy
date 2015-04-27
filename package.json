@@ -37,7 +37,7 @@
     "abigail": "0.0.7",
     "browserify": "^9.0.3",
     "coffeeify": "^1.0.0",
-    "jasminetea": "^0.1.27",
+    "jasminetea": "^0.1.30-rc.0",
     "jqn": "0.0.3",
     "ng-annotate": "^0.15.4",
     "onefile": "^0.2.8",
