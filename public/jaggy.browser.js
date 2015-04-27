@@ -94,50 +94,39 @@ Frames = (function() {
   };
 
   Frames.prototype.createScript = function(id) {
+
+    /*
+    animation= (id)->
+      i= 0
+      frames= [].slice.call window.document.querySelectorAll '#'+id+'>g>g'
+      display= null
+    
+      setTimeout -> nextFrame()
+      nextFrame=->
+        frame= frames[i]
+        frame= frames[i= 0] if frame is undefined
+        frame_id= frame.getAttribute 'id'
+        if frame_id is null
+          frame_id= id+'_'+('0000'+i).slice(-5) 
+          frame.setAttribute 'id',frame_id
+    
+        if i is 0 or frame.getAttribute('disposal') is '2'
+          uses= window.document.querySelectorAll '#'+id+'>use'
+          use.parentNode.removeChild use for use in uses
+    
+        i++
+        createDisplay frame_id
+        setTimeout nextFrame,frame.getAttribute 'delay'
+    
+      createDisplay=(frame_id)->
+        display= window.document.createElementNS 'http://www.w3.org/2000/svg','use'
+        display.setAttributeNS 'http://www.w3.org/1999/xlink','href','#'+frame_id if frame_id
+    
+        anime= window.document.querySelector '#'+id
+        anime.insertBefore display,window.document.querySelector '#'+id+'>g' if anime?
+     */
     var animation, script;
-    animation = function(id) {
-      var createDisplay, display, frames, i, nextFrame;
-      i = 0;
-      frames = [].slice.call(window.document.querySelectorAll('#' + id + '>g>g'));
-      display = null;
-      setTimeout(function() {
-        return nextFrame();
-      });
-      nextFrame = function() {
-        var frame, frame_id, j, len, use, uses;
-        frame = frames[i];
-        if (frame === void 0) {
-          frame = frames[i = 0];
-        }
-        frame_id = frame.getAttribute('id');
-        if (frame_id === null) {
-          frame_id = id + '_' + ('0000' + i).slice(-5);
-          frame.setAttribute('id', frame_id);
-        }
-        if (i === 0) {
-          uses = window.document.querySelectorAll('#' + id + '>use');
-          for (j = 0, len = uses.length; j < len; j++) {
-            use = uses[j];
-            use.parentNode.removeChild(use);
-          }
-        }
-        i++;
-        createDisplay(frame_id);
-        return setTimeout(nextFrame, frame.getAttribute('delay'));
-      };
-      return createDisplay = function(frame_id) {
-        var anime;
-        display = window.document.createElementNS('http://www.w3.org/2000/svg', 'use');
-        if (frame_id) {
-          display.setAttributeNS('http://www.w3.org/1999/xlink', 'href', '#' + frame_id);
-        }
-        anime = window.document.querySelector('#' + id);
-        if (anime != null) {
-          return anime.insertBefore(display, window.document.querySelector('#' + id + '>g'));
-        }
-      };
-    };
-    animation = "function (id) {\n  var createDisplay, display, frames, i, nextFrame;\n  i = 0;\n  frames = [].slice.call(window.document.querySelectorAll(\'#\' + id + \'>g>g\'));\n  display = null;\n  setTimeout(function() {\n    return nextFrame();\n  });\n  nextFrame = function() {\n    var frame, frame_id, j, len, use, uses;\n    frame = frames[i];\n    if (frame === void 0) {\n      frame = frames[i = 0];\n    }\n    frame_id = frame.getAttribute(\'id\');\n    if (frame_id === null) {\n      frame_id = id + \'_\' + (\'0000\' + i).slice(-5);\n      frame.setAttribute(\'id\', frame_id);\n    }\n    if (i === 0) {\n      uses = window.document.querySelectorAll(\'#\' + id + \'>use\');\n      for (j = 0, len = uses.length; j < len; j++) {\n        use = uses[j];\n        use.parentNode.removeChild(use);\n      }\n    }\n    i++;\n    createDisplay(frame_id);\n    return setTimeout(nextFrame, frame.getAttribute(\'delay\'));\n  };\n  return createDisplay = function(frame_id) {\n    var anime;\n    display = window.document.createElementNS(\'http://www.w3.org/2000/svg\', \'use\');\n    if (frame_id) {\n      display.setAttributeNS(\'http://www.w3.org/1999/xlink\', \'href\', \'#\' + frame_id);\n    }\n    anime = window.document.querySelector(\'#\' + id);\n    if (anime != null) {\n      return anime.insertBefore(display, window.document.querySelector(\'#\' + id + \'>g\'));\n    }\n  };\n}";
+    animation = "function (id) {\n  var createDisplay, display, frames, i, nextFrame;\n  i = 0;\n  frames = [].slice.call(window.document.querySelectorAll(\'#\' + id + \'>g>g\'));\n  display = null;\n  setTimeout(function() {\n    return nextFrame();\n  });\n  nextFrame = function() {\n    var frame, frame_id, j, len, use, uses;\n    frame = frames[i];\n    if (frame === void 0) {\n      frame = frames[i = 0];\n    }\n    frame_id = frame.getAttribute(\'id\');\n    if (frame_id === null) {\n      frame_id = id + \'_\' + (\'0000\' + i).slice(-5);\n      frame.setAttribute(\'id\', frame_id);\n    }\n    if (i === 0 || frame.getAttribute(\'disposal\') === \'2\') {\n      uses = window.document.querySelectorAll(\'#\' + id + \'>use\');\n      for (j = 0, len = uses.length; j < len; j++) {\n        use = uses[j];\n        use.parentNode.removeChild(use);\n      }\n    }\n    i++;\n    createDisplay(frame_id);\n    return setTimeout(nextFrame, frame.getAttribute(\'delay\'));\n  };\n  return createDisplay = function(frame_id) {\n    var anime;\n    display = window.document.createElementNS(\'http://www.w3.org/2000/svg\', \'use\');\n    if (frame_id) {\n      display.setAttributeNS(\'http://www.w3.org/1999/xlink\', \'href\', \'#\' + frame_id);\n    }\n    anime = window.document.querySelector(\'#\' + id);\n    if (anime != null) {\n      return anime.insertBefore(display, window.document.querySelector(\'#\' + id + \'>g\'));\n    }\n  };\n}";
     script = document.createElement('script');
     script.appendChild(document.createTextNode("(" + animation + ")('" + id + "');"));
     return script;
@@ -29466,7 +29455,7 @@ module.exports={
     "abigail": "0.0.7",
     "browserify": "^9.0.3",
     "coffeeify": "^1.0.0",
-    "jasminetea": "^0.1.27",
+    "jasminetea": "^0.1.30-rc.0",
     "jqn": "0.0.3",
     "ng-annotate": "^0.15.4",
     "onefile": "^0.2.8",

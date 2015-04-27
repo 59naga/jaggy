@@ -58,6 +58,8 @@ class Frames
     g
 
   createScript:(id)->
+    # Can not uglifyjs(The below code toString() by coffee-repl)
+    ###
     animation= (id)->
       i= 0
       frames= [].slice.call window.document.querySelectorAll '#'+id+'>g>g'
@@ -72,7 +74,7 @@ class Frames
           frame_id= id+'_'+('0000'+i).slice(-5) 
           frame.setAttribute 'id',frame_id
 
-        if i is 0
+        if i is 0 or frame.getAttribute('disposal') is '2'
           uses= window.document.querySelectorAll '#'+id+'>use'
           use.parentNode.removeChild use for use in uses
 
@@ -86,7 +88,8 @@ class Frames
 
         anime= window.document.querySelector '#'+id
         anime.insertBefore display,window.document.querySelector '#'+id+'>g' if anime?
-    animation= "function (id) {\n  var createDisplay, display, frames, i, nextFrame;\n  i = 0;\n  frames = [].slice.call(window.document.querySelectorAll(\'#\' + id + \'>g>g\'));\n  display = null;\n  setTimeout(function() {\n    return nextFrame();\n  });\n  nextFrame = function() {\n    var frame, frame_id, j, len, use, uses;\n    frame = frames[i];\n    if (frame === void 0) {\n      frame = frames[i = 0];\n    }\n    frame_id = frame.getAttribute(\'id\');\n    if (frame_id === null) {\n      frame_id = id + \'_\' + (\'0000\' + i).slice(-5);\n      frame.setAttribute(\'id\', frame_id);\n    }\n    if (i === 0) {\n      uses = window.document.querySelectorAll(\'#\' + id + \'>use\');\n      for (j = 0, len = uses.length; j < len; j++) {\n        use = uses[j];\n        use.parentNode.removeChild(use);\n      }\n    }\n    i++;\n    createDisplay(frame_id);\n    return setTimeout(nextFrame, frame.getAttribute(\'delay\'));\n  };\n  return createDisplay = function(frame_id) {\n    var anime;\n    display = window.document.createElementNS(\'http://www.w3.org/2000/svg\', \'use\');\n    if (frame_id) {\n      display.setAttributeNS(\'http://www.w3.org/1999/xlink\', \'href\', \'#\' + frame_id);\n    }\n    anime = window.document.querySelector(\'#\' + id);\n    if (anime != null) {\n      return anime.insertBefore(display, window.document.querySelector(\'#\' + id + \'>g\'));\n    }\n  };\n}"
+    ###
+    animation= "function (id) {\n  var createDisplay, display, frames, i, nextFrame;\n  i = 0;\n  frames = [].slice.call(window.document.querySelectorAll(\'#\' + id + \'>g>g\'));\n  display = null;\n  setTimeout(function() {\n    return nextFrame();\n  });\n  nextFrame = function() {\n    var frame, frame_id, j, len, use, uses;\n    frame = frames[i];\n    if (frame === void 0) {\n      frame = frames[i = 0];\n    }\n    frame_id = frame.getAttribute(\'id\');\n    if (frame_id === null) {\n      frame_id = id + \'_\' + (\'0000\' + i).slice(-5);\n      frame.setAttribute(\'id\', frame_id);\n    }\n    if (i === 0 || frame.getAttribute(\'disposal\') === \'2\') {\n      uses = window.document.querySelectorAll(\'#\' + id + \'>use\');\n      for (j = 0, len = uses.length; j < len; j++) {\n        use = uses[j];\n        use.parentNode.removeChild(use);\n      }\n    }\n    i++;\n    createDisplay(frame_id);\n    return setTimeout(nextFrame, frame.getAttribute(\'delay\'));\n  };\n  return createDisplay = function(frame_id) {\n    var anime;\n    display = window.document.createElementNS(\'http://www.w3.org/2000/svg\', \'use\');\n    if (frame_id) {\n      display.setAttributeNS(\'http://www.w3.org/1999/xlink\', \'href\', \'#\' + frame_id);\n    }\n    anime = window.document.querySelector(\'#\' + id);\n    if (anime != null) {\n      return anime.insertBefore(display, window.document.querySelector(\'#\' + id + \'>g\'));\n    }\n  };\n}"
 
     script= document.createElement 'script'
     script.appendChild document.createTextNode "(#{animation})('#{id}');"
