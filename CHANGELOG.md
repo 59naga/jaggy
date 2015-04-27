@@ -1,14 +1,17 @@
-v0.1.17-rc.3 / Apr 26 2015
+v0.1.17-rc.3 / Apr 27 2015
 =========================
  * [`4b8a6ee`][13] :bug: Fix [#6][13A]
  * [`4b8a6ee`][13] :bug: Fix [#7][13B]
- * [`unknown`][14] :lipstick: Fix [#8][14A] Add `jagged` for jaggy directive
+ * [`37aaf03`][14] :lipstick: Fix [#8][14A] Add `jagged` for jaggy directive
+ * [`unknown`][15] :bug: Fix [#9][15A]
 
 [13]: https://github.com/59naga/jaggy/commit/4b8a6ee577f8625ddfd2e492a30e36b9a8d244e1
 [13A]: https://github.com/59naga/jaggy/issues/6
 [13B]: https://github.com/59naga/jaggy/issues/7
-[14]: https://github.com/59naga/jaggy/commit/
+[14]: https://github.com/59naga/jaggy/commit/37aaf03a58170f9153f4a11565186df4f21466a3
 [14A]: https://github.com/59naga/jaggy/issues/8
+[15]: https://github.com/59naga/jaggy/commit/
+[15A]: https://github.com/59naga/jaggy/issues/9
 
 v0.1.17 / Apr 15 2015
 =========================

@@ -53,7 +53,8 @@ Jaggy._createSVG= (img,args...,callback)->
     console.log 'jaggy:cached',cacheUrl,cache.innerHTML.length.toLocaleString(),'decompressed',Date.now()-begin,'msec' if Jaggy.options.debug and cache?
     return callback null,cache if cache? and options.cache
   
-  getPixels url,(error,pixels)->
+  type= '.GIF' if url.split('?')[0].match /.gif$/i
+  getPixels url,type,(error,pixels)->
     return callback error,null if error?
     return callback true,null if options.pixelLimit>0 and pixels.data.length> options.pixelLimit
 
