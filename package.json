@@ -1,22 +1,17 @@
 {
   "name": "jaggy",
   "main": "jaggy",
-  "bin" : "jaggy",
+  "bin": "jaggy",
   "description": "is Converting to SVG by pixels",
   "version": "0.1.14-rc.0",
-
   "scripts": {
     "build": "browserify lib/jaggy.browser.coffee -t coffeeify --extension .coffee | ng-annotate - --add > public/jaggy.browser.js",
     "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js --prefix 1",
-
     "build-dev": "browserify lib/jaggy.browser.coffee -t coffeeify --extension .coffee | ng-annotate - --add > public/jaggy.browser.js",
     "watch": "abigail ./**/*.coffee:build-dev --ignore --execute",
-
     "test": "jasminetea test --verbose --cover --report --timeout 20000",
     "posttest": "rm public/*.svg",
-    
     "update-bower": "git tag v$(jqn bower version) &&  git push --tags",
-
     "prestart": "onefile --json --output public/pkgs",
     "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",
     "convert": "jaggy public -o hogekosan -g 2"
@@ -25,7 +20,7 @@
     "coffee-script": "^1.8.0",
     "commander": "^2.6.0",
     "dom-lite": "^0.4.0",
-    "get-pixels": "git://github.com/59naga/get-pixels.git",
+    "get-pixels": "git://github.com/59naga/get-pixels.git#c5b036efaf8bd1e6c79f24e639f87654271e8376",
     "gify-parse": "^1.0.4",
     "gulp": "*",
     "gulp-util": "^3.0.3",
@@ -43,7 +38,6 @@
     "onefile": "^0.2.8",
     "uglify-js": "^2.4.19"
   },
-
   "keywords": [
     "pixelart",
     "get-pixels",
