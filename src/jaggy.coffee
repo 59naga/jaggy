@@ -99,7 +99,7 @@ jaggy.cli= (argv)->
   # Ignore unsupport extension
   globs.push '!**/*.!(*gif|*png|*jpg)'
 
-  gulp.src globs,base:process.cwd()
+  gulp.src globs,{base:process.cwd(),nocase:yes}
     .pipe jaggy glitch:cli.glitch
     .pipe gulp.dest path.resolve cli.output
     .on 'data',(file)->

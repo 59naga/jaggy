@@ -1,12 +1,13 @@
 {
   "name": "jaggy",
-  "main": "public/jaggy.browser.js",
-  "version": "0.1.18",
+  "main": "public/jaggy.min.js",
+  "description": "<img src=\"pixel-art\"> to <svg>",
   "homepage": "https://github.com/59naga/jaggy",
+  
   "authors": [
     "59naga <i59naga@icloud.com>"
   ],
-  "description": "<img src=\"pixel-art\"> to <svg>",
+
   "keywords": [
     "pixel",
     "pixel-art",
@@ -16,6 +17,7 @@
     "browserify",
     "angularjs"
   ],
+
   "license": "MIT",
   "ignore": [
     "**/.*",

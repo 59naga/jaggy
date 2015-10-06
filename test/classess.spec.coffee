@@ -1,4 +1,4 @@
-{Frames, Frame, Color, Rect, Point}= require '../lib/classes'
+{Frames, Frame, Color, Rect, Point}= require '../src/classes'
 
 describe 'Classes',->
   it 'Convert to <g> by Frame',->

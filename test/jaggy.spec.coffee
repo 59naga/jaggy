@@ -1,4 +1,4 @@
-jaggy= require '../'
+jaggy= require '../src'
 
 gulp= require 'gulp'
 fs= require 'fs'
@@ -10,43 +10,79 @@ fs= require 'fs'
 describe 'jaggy',->
   describe 'Usage for gulp',->
     it 'Convert to <svg> by .gif',(done)->
-      gulp.src 'public/*.gif'
+      glob= 'public/*.gif'
+
+      files= []
+      gulp.src glob,{nocase:yes}
         .pipe jaggy()
-        .pipe gulp.dest 'public'
-        .on 'data',(file)->
-          svg= fs.readFileSync(file.path).toString()
-          expect(svg.indexOf("rgba(,,,NaN)")).toEqual -1
+        .on 'data',(file)-> files.push file
         .on 'end',->
+          file= files[0]
+          filePath= file?.path ? ''
+          try
+            svg= fs.readFileSync(filePath).toString()
+
+          svg?= ''
+
+          expect(files.length).toBe 2
+          expect(svg.indexOf("rgba(,,,NaN)")).toEqual -1
           done()
 
     it 'Convert to <svg> by .png',(done)->
-      gulp.src 'public/*.png'
+      glob= 'public/*.png'
+
+      files= []
+      gulp.src glob,{nocase:yes}
         .pipe jaggy()
-        .pipe gulp.dest 'public'
-        .on 'data',(file)->
-          svg= fs.readFileSync(file.path).toString()
-          expect(svg.indexOf("rgba(,,,NaN)")).toEqual -1
+        .on 'data',(file)-> files.push file
         .on 'end',->
+          file= files[0]
+          filePath= file?.path ? ''
+          try
+            svg= fs.readFileSync(filePath).toString()
+
+          svg?= ''
+
+          expect(files.length).toBe 2
+          expect(svg.indexOf("rgba(,,,NaN)")).toEqual -1
           done()
 
     it 'Convert to <svg> by .jpg',(done)->
-      gulp.src 'public/*.jpg'
+      glob= 'public/*.jpg'
+
+      files= []
+      gulp.src glob,{nocase:yes}
         .pipe jaggy()
-        .pipe gulp.dest 'public'
-        .on 'data',(file)->
-          svg= fs.readFileSync(file.path).toString()
-          expect(svg.indexOf("rgba(,,,NaN)")).toEqual -1
+        .on 'data',(file)-> files.push file
         .on 'end',->
+          file= files[0]
+          filePath= file?.path ? ''
+          try
+            svg= fs.readFileSync(filePath).toString()
+
+          svg?= ''
+
+          expect(files.length).toBe 1
+          expect(svg.indexOf("rgba(,,,NaN)")).toEqual -1
           done()
 
     it 'Glitch to <svg> by .png',(done)->
-      gulp.src 'public/yuno.png'
-        .pipe jaggy glitch:3
-        .pipe gulp.dest 'public'
-        .on 'data',(file)->
-          svg= fs.readFileSync(file.path).toString()
-          expect(svg.indexOf("rgba(,,,NaN)")).toEqual -1
+      glob= 'public/yuno.PNG'
+
+      files= []
+      gulp.src glob,{nocase:yes}
+        .pipe jaggy {glitch:3}
+        .on 'data',(file)-> files.push file
         .on 'end',->
+          file= files[0]
+          filePath= file?.path ? ''
+          try
+            svg= fs.readFileSync(filePath).toString()
+
+          svg?= ''
+
+          expect(files.length).toBe 1
+          expect(svg.indexOf("rgba(,,,NaN)")).toEqual -1
           done()
 
     it 'Convert to pixels by gutil.File',(done)->

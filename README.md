@@ -30,7 +30,7 @@ Create the sameName.svg by [.gif, .jpg, .png]
 Example:
 
 ```bash
-$ npm install jaggy -g
+$ npm install gulp jaggy --global
 $ jaggy public_html --recursive
 ```
 

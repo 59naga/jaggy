@@ -3,41 +3,61 @@
   "main": "jaggy",
   "bin": "jaggy",
   "description": "is Converting to SVG by pixels",
-  "version": "0.1.14-rc.0",
+  "version": "0.2.0-alpha",
+
+  "main": "lib",
+  "files": [
+    "jaggy",
+    "lib",
+    "index.js"
+  ],
   "scripts": {
-    "build": "browserify lib/jaggy.browser.coffee -t coffeeify --extension .coffee | ng-annotate - --add > public/jaggy.browser.js",
-    "postbuild": "uglifyjs public/jaggy.browser.js --compres --mangle --source-map public/jaggy.browser.min.js.map --source-map-url jaggy.browser.min.js.map --output public/jaggy.browser.min.js --prefix 1",
-    "build-dev": "browserify lib/jaggy.browser.coffee -t coffeeify --extension .coffee | ng-annotate - --add > public/jaggy.browser.js",
-    "watch": "abigail ./**/*.coffee:build-dev --ignore --execute",
-    "test": "jasminetea test --verbose --cover --report --timeout 20000",
-    "posttest": "rm public/*.svg",
-    "update-bower": "git tag v$(jqn bower version) &&  git push --tags",
-    "prestart": "onefile --json --output public/pkgs",
-    "start": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",
-    "convert": "jaggy public -o hogekosan -g 2"
+    "start": "jasminetea --watch --timeout 20000",
+    "test": "jasminetea --cover --report --timeout 20000",
+
+    "prelocalhost": "onefile -D inclusive --output public/pkgs",
+    "localhost": "cd public && open http://localhost:8000 && python -m SimpleHTTPServer",
+
+    "watch": "abigail build-dev PKG",
+    "build-dev": "browserify src/jaggy.browser.coffee -t coffeeify --extension .coffee > $(opc bower main)",
+
+    "prebuild": "browserify src/jaggy.browser.coffee --debug -t coffeeify --extension .coffee -t [ browserify-ngannotate --x .coffee ] | exorcist public/jaggy.js.map -b . > public/jaggy.js",
+    "build": "uglifyjs public/jaggy.js --in-source-map public/jaggy.js.map  --compres --mangle --source-map public/jaggy.min.js.map --source-map-url jaggy.min.js.map > public/jaggy.min.js",
+    "postbuild": "rm public/jaggy.js* && wc -c $(opc bower main)",
+
+    "update": "git tag v$(opc bower version) && git push --tags",
+
+    "prepublish": "node -e \"if(process.env.TRAVIS){}else{process.exit(1)}\" && npm run compile || echo skip prepublish",
+    "compile": "coffee --output lib --bare --compile src",
+    "postcompile": "coffee --bare --compile index.coffee"
   },
+
   "dependencies": {
-    "coffee-script": "^1.8.0",
     "commander": "^2.6.0",
-    "dom-lite": "^0.4.0",
-    "get-pixels": "git://github.com/59naga/get-pixels.git#c5b036efaf8bd1e6c79f24e639f87654271e8376",
+    "dom-lite": "^0.5.0",
+    "get-pixels": "^3.2.3",
     "gify-parse": "^1.0.4",
-    "gulp": "*",
     "gulp-util": "^3.0.3",
     "lz-string": "^1.4.1",
     "mime": "^1.2.11",
-    "through2": "^0.6.3"
+    "through2": "^2.0.0"
   },
   "devDependencies": {
-    "abigail": "0.0.7",
-    "browserify": "^9.0.3",
+    "browserify": "^11.2.0",
+    "coffee-script": "^1.10.0",
+    "abigail": "^0.1.1",
+    "browserify": "^11.2.0",
+    "browserify-ngannotate": "^1.0.1",
     "coffeeify": "^1.0.0",
-    "jasminetea": "^0.1.30-rc.0",
-    "jqn": "0.0.3",
-    "ng-annotate": "^0.15.4",
-    "onefile": "^0.2.8",
-    "uglify-js": "^2.4.19"
+    "exorcist": "^0.4.0",
+    "gulp": "^3.9.0",
+    "jasminetea": "^0.2.1",
+    "ng-annotate": "^1.0.2",
+    "onefile": "^0.3.3",
+    "uglify-js": "^2.4.19",
+    "object-parser-cli": "0.0.1"
   },
+
   "keywords": [
     "pixelart",
     "get-pixels",
