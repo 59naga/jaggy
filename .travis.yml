@@ -22,4 +22,6 @@ deploy:
   provider: npm
   email: i59naga@icloud.com
   api_key:
-    secure: SsuMkg9wYCHZ/ZvctgyoyJje+jHVQFD3vH84dIZQDJO7Eqie84u2XIH4g22D9FPnKvyq7NO1N9P6RlU0TMAB6zmIKZPIjnKgJPVWfDS5hfGuIwPrhBjlRcPtQ8DNM6IWXVmO96+co4s2scpZ+jxXCrZmOyuTS8Fi7myIJ3jfCjw=
+    secure: ASq8p+8Kmu36TGLVLWBulUqXvfxDI8BAQopYhEbO/TN7mlxBq0MB5r9Ex5EgFqZimu+D7bWjakZQd1YGGrZSmsu8xgXtPBD/i2kaGZyjZaNNtfNMaoIzOAaSxdECzGbXWkkOt7nwqjTJzLYiZ8z8b+EzGdFt0voM+ar2qtk0D5o=
+  on:
+    repo: 59naga/jaggy
