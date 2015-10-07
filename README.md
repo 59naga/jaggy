@@ -153,7 +153,7 @@ app.config(function(jaggy){
     Change `Frame.putImageData` logic by increment channel value.
 
 ## Known issue
-* Animated gif Can be convert, But, It's so very very heavy.
+* Svg conversion of animated gif is experimental. It will take the high the CPU usage to play.
 * Uncaught QuotaExceededError: Failed to execute 'setItem' on 'Storage': Setting the value of `jaggy:url` exceeded the quota. due to Huge Animationed gif
 
 ## TODO
