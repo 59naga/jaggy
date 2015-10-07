@@ -25,7 +25,7 @@
     "build": "uglifyjs public/jaggy.js --in-source-map public/jaggy.js.map  --compres --mangle --source-map public/jaggy.min.js.map --source-map-url jaggy.min.js.map > public/jaggy.min.js",
     "postbuild": "rm public/jaggy.js* && wc -c $(opc bower main)",
 
-    "update": "git tag v$(opc bower version) && git push --tags",
+    "update": "git tag v$(opc package version) && git push --tags",
 
     "prepublish": "node -e \"if(process.env.TRAVIS){}else{process.exit(1)}\" && npm run compile || echo skip prepublish",
     "compile": "coffee --output lib --bare --compile src",
